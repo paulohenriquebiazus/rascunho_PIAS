@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collector's Hub | Loja Geek</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <header>
+        <button class="hamburger-btn" id="menuToggle" aria-label="Abrir Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="logo">
+            <a href="#" id="logoLink">
+                <img src="imagens/Logo.png" alt="Collector's Hub Logo">
+            </a>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn" id="btnIrCarrinho">
+                🛒 <span>Carrinho</span>
+                <span id="cartCountBadge" class="badge">0</span>
+            </button>
+            <button class="letra_botao_cadas" id="btnIrCadastro" title="Cadastro / Login">👤</button>
+            <button class="letra_botao_cadas" id="btnIrConfig" title="Configurações">⚙️</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside id="sidebar">
+            <div class="aside-header">
+                <h2>Categorias</h2>
+                <button class="close-btn" id="menuClose">&times;</button>
+            </div>
+            <ul>
+                <li><a class="nav-link" href="#" data-categoria="todos">🏠 Todos os Produtos</a></li>
+                <li><a class="nav-link" href="#" data-categoria="canecas">☕ Canecas</a></li>
+                <li><a class="nav-link" href="#" data-categoria="ac">🦸 Action Figures</a></li>
+                <li><a class="nav-link" href="#" data-categoria="quadros">🖼️ Quadros</a></li>
+                <li><a class="nav-link" href="#" data-categoria="mangas">📚 Mangás</a></li>
+                <li><a class="nav-link" href="#" data-categoria="ln">📖 Light Novels</a></li>
+                <li><a class="nav-link" href="#" data-categoria="hq">💥 Quadrinhos</a></li>
+                <li><a class="nav-link" href="#" data-categoria="games">🎮 Games</a></li>
+                <li><a class="nav-link" href="#" data-categoria="colecionaveis">🎲 Colecionáveis</a></li>
+                <li><a class="nav-link" href="#" data-categoria="roupas">👘 Roupas</a></li>
+            </ul>
+        </aside>
+
+        <!-- AQUI O JS RENDEREIZA O CONTEÚDO DA TELA ATUAL (HOME, CARRINHO OU CADASTRO) -->
+        <main id="app"></main>
+    </div>
+
+    <footer>
+        <p>© 2026 Collector's Hub | A sua loja de colecionáveis geek.</p>
+    </footer>
+
+</body>
+</html>
