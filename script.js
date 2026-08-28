@@ -27,18 +27,6 @@ const logosCategorias = {
     'roupas': 'imagens/logo-roupas.png'
 };
 
-const nomesCategorias = {
-    'todos': 'Todos os Produtos',
-    'canecas': 'Canecas',
-    'ac': 'Action Figures',
-    'quadros': 'Quadros',
-    'mangas': 'Mangás',
-    'ln': 'Light Novels',
-    'hq': 'Quadrinhos',
-    'games': 'Games',
-    'colecionaveis': 'Colecionáveis',
-    'roupas': 'Roupas'
-};
 
 // Atualiza a logo no Header de acordo com a categoria selecionada
 function atualizarLogoHeader() {

@@ -463,10 +463,55 @@
   },
   {
     "id": 51,
-    "nome": "Attack On Titan",
+    "nome": "Manga de Attack On Titan",
     "preco": 49.0,
     "imagem": "imagens/attk.jpg",
     "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 52,
+    "nome": "Caneca de Maomao",
+    "preco": 50.0,
+    "imagem": "imagens/c_maomao.png",
+    "categoria": "canecas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 53,
+    "nome": "Action Figure Toji Fushiguro",
+    "preco": 350.0,
+    "imagem": "imagens/ac_toji.png",
+    "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 54,
+    "nome": "Superman vs Homem Aranha HQ",
+    "preco": 60.0,
+    "imagem": "imagens/hq_ha_vs_sm.png",
+    "categoria": "hq",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 55,
+    "nome": "Quadro Spy Family",
+    "preco": 25.0,
+    "imagem": "imagens/spy_family_q.png",
+    "categoria": "quadros",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 56,
+    "nome": "Pokebola 3D",
+    "preco": 65.0,
+    "imagem": "imagens/poke_fita.png",
+    "categoria": "colecionaveis",
     "estoque": 5,
     "destaque": false
   }

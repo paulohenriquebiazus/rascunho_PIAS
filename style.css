@@ -65,7 +65,7 @@ header {
 }
 
 .logo img {
-    width: 170px;
+    width: 200px;
     height: auto;
     display: block;
     filter: drop-shadow(0 0 8px rgba(107, 63, 201, 0.5));
