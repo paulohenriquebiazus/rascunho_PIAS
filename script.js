@@ -27,7 +27,6 @@ const logosCategorias = {
     'roupas': 'imagens/logo-roupas.png'
 };
 
-
 // Atualiza a logo no Header de acordo com a categoria selecionada
 function atualizarLogoHeader() {
     const logoImg = document.querySelector('#logoLink img');
@@ -161,7 +160,6 @@ function render() {
     if (!main) return;
 
     atualizarBadge();
-    atualizarLogoHeader(); // Atualiza a logo conforme a categoria selecionada
 
     if (estado.telaAtual === 'home') {
         renderHome(main);
@@ -172,6 +170,9 @@ function render() {
     } else if (estado.telaAtual === 'configuracoes') {
         renderConfiguracoes(main);
     }
+
+    atualizarLogoHeader(); // Atualiza a logo conforme a categoria selecionada
+    
 }
 
 // ==========================================
@@ -223,15 +224,7 @@ function renderHome(container) {
             </div>
         </section>
         <h2 class="secao-titulo">🛒 Todos os Produtos</h2>
-    ` : `
-        <!-- Banner exibido ao filtrar uma categoria -->
-        <div class="categoria-header-banner">
-            <img src="${logosCategorias[estado.categoriaFiltro] || logosCategorias['todos']}" 
-                 alt="${nomesCategorias[estado.categoriaFiltro]}" 
-                 class="img-categoria-banner">
-            <h2>${nomesCategorias[estado.categoriaFiltro]}</h2>
-        </div>
-    `;
+    ` : '';
 
     container.innerHTML = `
         ${htmlDestaques}
@@ -631,11 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCadastro = document.getElementById('btnIrCadastro');
     const btnConfig = document.getElementById('btnIrConfig');
 
-    if (btnLogo) btnLogo.addEventListener('click', (e) => { 
-        e.preventDefault(); 
-        estado.categoriaFiltro = 'todos'; // Reseta o filtro para ver todas as categorias e a logo inicial
-        navegaPara('home'); 
-    });
+    if (btnLogo) btnLogo.addEventListener('click', (e) => { e.preventDefault(); navegaPara('home'); });
     if (btnCarrinho) btnCarrinho.addEventListener('click', () => navegaPara('carrinho'));
     if (btnCadastro) btnCadastro.addEventListener('click', () => navegaPara('cadastro'));
     if (btnConfig) btnConfig.addEventListener('click', () => navegaPara('configuracoes'));
