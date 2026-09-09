@@ -693,7 +693,7 @@ body.light-mode .campo-config select {
 }
 
 .img-categoria-banner {
-    max-height: 80px;
+    max-height: 150px;
     width: auto;
     object-fit: contain;
     filter: drop-shadow(0 0 8px rgba(107, 63, 201, 0.5));
