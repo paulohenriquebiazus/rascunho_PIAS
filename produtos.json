@@ -261,10 +261,10 @@
   },
   {
     "id": 29,
-    "nome": "Invencível #1: Negócios de Família",
-    "preco": 19.9,
-    "imagem": "imagens/invencível.jpeg",
-    "categoria": "hq",
+    "nome": "CoreKeeper",
+    "preco": 189.97,
+    "imagem": "imagens/corekeeper.jfif",
+    "categoria": "games",
     "estoque": 5,
     "destaque": false
   },
@@ -474,7 +474,7 @@
     "id": 52,
     "nome": "Caneca de Maomao",
     "preco": 50.0,
-    "imagem": "imagens/c_maomao.png",
+    "imagem": "imagens/c_maomao.png.jpg",
     "categoria": "canecas",
     "estoque": 5,
     "destaque": false
@@ -483,7 +483,7 @@
     "id": 53,
     "nome": "Action Figure Toji Fushiguro",
     "preco": 350.0,
-    "imagem": "imagens/ac_toji.png",
+    "imagem": "imagens/ac_toji.png.jpg",
     "categoria": "ac",
     "estoque": 5,
     "destaque": false
@@ -492,7 +492,7 @@
     "id": 54,
     "nome": "Superman vs Homem Aranha HQ",
     "preco": 60.0,
-    "imagem": "imagens/hq_ha_vs_sm.png",
+    "imagem": "imagens/hq_ha_vs_sm.png.jpg",
     "categoria": "hq",
     "estoque": 5,
     "destaque": false
@@ -501,7 +501,7 @@
     "id": 55,
     "nome": "Quadro Spy Family",
     "preco": 25.0,
-    "imagem": "imagens/spy_family_q.png",
+    "imagem": "imagens/spy_family_q.png.jfif",
     "categoria": "quadros",
     "estoque": 5,
     "destaque": false
