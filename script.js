@@ -13,6 +13,39 @@ let estado = {
 };
 
 // ==========================================
+// ÍCONES PERSONALIZADOS (SVG)
+// ==========================================
+function getIconeUsuarioHTML(tipo = 'circulo') {
+    // tipo: 'circulo' | 'quadrado' | 'outline'
+    const estilotransform = tipo === 'circulo' ? 'border-radius: 50%;' : tipo === 'quadrado' ? 'border-radius: 6px;' : '';
+    const bg = tipo === 'outline' ? 'background: transparent; border: 1px solid #6c5ce7;' : 'background: #6c5ce7;';
+
+    return `
+        <span class="icone-box" style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; ${bg} ${estilotransform} vertical-align: middle; margin-right: 4px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        </span>
+    `;
+}
+
+function getIconeConfigHTML(tipo = 'circulo') {
+    // tipo: 'circulo' | 'quadrado' | 'outline'
+    const estilotransform = tipo === 'circulo' ? 'border-radius: 50%;' : tipo === 'quadrado' ? 'border-radius: 6px;' : '';
+    const bg = tipo === 'outline' ? 'background: transparent; border: 1px solid #3f4265;' : 'background: #2a2d4a;';
+
+    return `
+        <span class="icone-box" style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; ${bg} ${estilotransform} vertical-align: middle; margin-right: 6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </span>
+    `;
+}
+
+// ==========================================
 // DICIONÁRIOS E MAPEAMENTOS
 // ==========================================
 const logosCategorias = {
@@ -100,16 +133,82 @@ function fazerLogout() {
 
 function atualizarUIHeader() {
     const btnCadastro = document.getElementById("btnIrCadastro");
+    const btnConfig = document.getElementById("btnIrConfig");
     const usuario = getUsuarioLogado();
 
-    if (usuario && btnCadastro) {
-        const primeiroNome = usuario.nome.split(' ')[0];
-        btnCadastro.innerHTML = `👤 ${primeiroNome}`;
-        btnCadastro.title = `Conectado como ${usuario.nome}`;
-    } else if (btnCadastro) {
-        btnCadastro.innerHTML = `👤`;
-        btnCadastro.title = "Cadastro / Login";
+    // Formato dos ícones: 'circulo', 'quadrado' ou 'outline'
+    const FORMA_ICONE = 'circulo'; 
+
+    if (btnCadastro) {
+        if (usuario) {
+            const primeiroNome = usuario.nome.split(' ')[0];
+            btnCadastro.innerHTML = `${getIconeUsuarioHTML(FORMA_ICONE)} <span>${primeiroNome}</span>`;
+            btnCadastro.title = `Conectado como ${usuario.nome}`;
+        } else {
+            btnCadastro.innerHTML = `${getIconeUsuarioHTML(FORMA_ICONE)} <span>Entrar</span>`;
+            btnCadastro.title = "Cadastro / Login";
+        }
     }
+
+    if (btnConfig) {
+        btnConfig.innerHTML = getIconeConfigHTML(FORMA_ICONE);
+        btnConfig.title = "Configurações";
+    }
+}
+
+// ==========================================
+// 3.1 GERENCIAMENTO E RASTREAMENTO DE PEDIDOS
+// ==========================================
+function getPedidos() {
+    return JSON.parse(localStorage.getItem("pedidos_hub")) || [];
+}
+
+function salvarPedido(novoPedido) {
+    const pedidos = getPedidos();
+    pedidos.unshift(novoPedido);
+    localStorage.setItem("pedidos_hub", JSON.stringify(pedidos));
+}
+
+function getPedidosUsuarioAtual() {
+    const usuario = getUsuarioLogado();
+    if (!usuario) return [];
+    const todosPedidos = getPedidos();
+    return todosPedidos.filter(p => p.usuarioEmail === usuario.email);
+}
+
+function renderLinhaTempoRastreamentoHTML(pedido) {
+    const etapas = [
+        { id: 1, label: 'Pedido Recebido', icone: '📝' },
+        { id: 2, label: 'Pagamento Aprovado', icone: '💳' },
+        { id: 3, label: 'Em Separação', icone: '📦' },
+        { id: 4, label: 'Em Trânsito', icone: '🚚' },
+        { id: 5, label: 'Entregue', icone: '🏠' }
+    ];
+
+    const etapaAtual = pedido.statusEtapa || 2;
+
+    return `
+        <div style="margin-top: 15px; padding: 15px; background: #141526; border-radius: 8px; border: 1px solid #2a2d4a;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem; color: #a0a3c4; flex-wrap: wrap; gap: 8px;">
+                <span>Rastreio: <strong style="color: #6c5ce7;">${pedido.codigoRastreio || 'N/A'}</strong></span>
+                <span>Status: <strong style="color: #00e676;">${etapas.find(e => e.id === etapaAtual)?.label}</strong></span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; position: relative; gap: 4px;">
+                ${etapas.map(etapa => {
+                    const concluida = etapa.id <= etapaAtual;
+                    return `
+                        <div style="display: flex; flex-direction: column; align-items: center; flex: 1; text-align: center;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: ${concluida ? '#6c5ce7' : '#1e2038'}; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; margin-bottom: 4px; border: 2px solid ${concluida ? '#00e676' : '#3f4265'};">
+                                ${etapa.icone}
+                            </div>
+                            <span style="font-size: 0.7rem; color: ${concluida ? '#fff' : '#6b7280'}; font-weight: ${concluida ? 'bold' : 'normal'};">${etapa.label}</span>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+    `;
 }
 
 // ==========================================
@@ -244,7 +343,7 @@ function renderSecaoAvaliacoesHTML(produtoId) {
 }
 
 // ==========================================
-// 6. MODAL DE DETALHES DO PRODUTO (INFO COMPLETA)
+// 6. MODAL DE DETALHES DO PRODUTO
 // ==========================================
 function renderModalDetalhesHTML() {
     if (!estado.produtoModalId) return '';
@@ -256,7 +355,6 @@ function renderModalDetalhesHTML() {
     const semEstoque = p.estoque <= 0;
     const nomeCategoria = nomesCategorias[p.categoria] || p.categoria;
 
-    // Descrição padrão dinâmica caso não esteja definida no JSON
     const descricao = p.descricao || `Produto oficial e de alta qualidade: <strong>${p.nome}</strong>. Ideal para fãs, colecionadores e amantes do universo geek e pop culture. Adicione à sua coleção hoje mesmo!`;
 
     return `
@@ -298,7 +396,7 @@ function renderModalDetalhesHTML() {
                             </div>
                         </div>
 
-                        <button class="btn-comprar" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="width: 100%; padding: 12px; font-size: 1rem; cursor: pointer;">
+                        <button class="btn-comprar-modal" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="width: 100%; padding: 12px; font-size: 1rem; cursor: pointer; background: #6c5ce7; color: #fff; border: none; border-radius: 6px; font-weight: bold;">
                             ${semEstoque ? 'Esgotado' : '🛒 Adicionar ao Carrinho'}
                         </button>
                     </div>
@@ -357,13 +455,38 @@ function render() {
         renderConfiguracoes(main);
     }
 
-    // Gerenciamento de Exibição do Modal
     const modalHTML = renderModalDetalhesHTML();
     if (modalHTML) {
         main.insertAdjacentHTML('beforeend', modalHTML);
         
         const btnFechar = document.getElementById('btnFecharModal');
         const overlay = document.getElementById('modalDetalhesOverlay');
+        const btnComprarModal = document.querySelector('.btn-comprar-modal');
+
+        if (btnComprarModal) {
+            btnComprarModal.addEventListener('click', (e) => {
+                const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                const prod = produtos.find(p => p.id === id);
+                
+                if (!prod || prod.estoque <= 0) return;
+
+                let carrinho = getCarrinho();
+                const itemExistente = carrinho.find(i => i.id === id);
+
+                if (itemExistente) {
+                    itemExistente.qtd += 1;
+                } else {
+                    carrinho.push({ ...prod, qtd: 1 });
+                }
+
+                prod.estoque -= 1;
+                salvarCarrinho(carrinho);
+                alert(`${prod.nome} foi adicionado ao carrinho!`);
+                
+                estado.produtoModalId = null;
+                render();
+            });
+        }
 
         if (btnFechar) {
             btnFechar.addEventListener('click', () => {
@@ -408,7 +531,6 @@ function renderHome(container) {
     const favoritos = getFavoritos();
     const produtosDestaque = produtos.filter(p => p.destaque);
     
-    // 1. Filtragem por categoria
     let listaFiltrada = produtos;
     if (estado.categoriaFiltro === 'favoritos') {
         listaFiltrada = produtos.filter(p => favoritos.includes(p.id));
@@ -416,7 +538,6 @@ function renderHome(container) {
         listaFiltrada = produtos.filter(p => p.categoria === estado.categoriaFiltro);
     }
 
-    // 2. Filtragem por busca textual
     if (estado.termoBusca.trim() !== '') {
         const termo = estado.termoBusca.toLowerCase().trim();
         listaFiltrada = listaFiltrada.filter(p => p.nome.toLowerCase().includes(termo));
@@ -491,7 +612,7 @@ function renderHome(container) {
     container.innerHTML = `
         ${htmlBarraBusca}
         ${htmlDestaques}
-        ${(estado.categoriaFiltro !== 'todos' || estado.termoBusca) ? `<h2 class="secao-titulo">${tituloSecao}${estado.termoBusca ? `(Resultados para "${estado.termoBusca}")` : ''}</h2>` : ''}
+        ${(estado.categoriaFiltro !== 'todos' || estado.termoBusca) ? `<h2 class="secao-titulo">${tituloSecao} ${estado.termoBusca ? `(Resultados para "${estado.termoBusca}")` : ''}</h2>` : ''}
         ${listaFiltrada.length === 0 ? `<p style="text-align: center; padding: 40px; color: #a0a3c4;">Nenhum produto encontrado.</p>` : ''}
         <div class="cards">
             ${listaFiltrada.map(p => {
@@ -535,7 +656,6 @@ function renderHome(container) {
         </div>
     `;
 
-    // Eventos do Modal
     container.querySelectorAll('.btn-detalhes').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = parseInt(e.currentTarget.getAttribute('data-id'));
@@ -544,7 +664,6 @@ function renderHome(container) {
         });
     });
 
-    // Evento de Busca
     const inputBusca = container.querySelector('#inputBuscaProdutos');
     if (inputBusca) {
         inputBusca.addEventListener('input', (e) => {
@@ -566,7 +685,6 @@ function renderHome(container) {
         });
     }
 
-    // Eventos de Favoritar
     container.querySelectorAll('.btn-favorito').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = parseInt(e.currentTarget.getAttribute('data-id'));
@@ -574,7 +692,6 @@ function renderHome(container) {
         });
     });
 
-    // Eventos de Compra
     container.querySelectorAll('.btn-comprar').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = parseInt(e.target.getAttribute('data-id'));
@@ -600,7 +717,6 @@ function renderHome(container) {
         });
     });
 
-    // Eventos de Avaliação
     container.querySelectorAll('.btn-ver-avaliacoes').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = e.target.getAttribute('data-id');
@@ -646,6 +762,9 @@ function renderCarrinho(container) {
 
     const faltamFrete = META_FRETE_GRATIS - subtotal;
     const pctFrete = Math.min(100, (subtotal / META_FRETE_GRATIS) * 100);
+
+    const usuario = getUsuarioLogado();
+    const cepCadastrado = (usuario && usuario.endereco) ? usuario.endereco.cep : '';
 
     container.innerHTML = `
         <div class="carrinho-page">
@@ -697,7 +816,7 @@ function renderCarrinho(container) {
                     <div class="box-calculo">
                         <label for="cepInput">Calcular Frete (CEP)</label>
                         <div class="input-btn-group">
-                            <input type="text" id="cepInput" placeholder="00000-000" maxlength="9">
+                            <input type="text" id="cepInput" placeholder="00000-000" maxlength="9" value="${cepCadastrado}">
                             <button type="button" id="btnFrete">Calcular</button>
                         </div>
                     </div>
@@ -797,62 +916,302 @@ function renderCarrinho(container) {
     });
 
     document.getElementById('btnFinalizar').addEventListener('click', () => {
-        alert('Pedido realizado com sucesso!');
+        const usuario = getUsuarioLogado();
+        const itensCarrinho = getCarrinho();
+
+        if (itensCarrinho.length === 0) return;
+
+        const dataAtual = new Date();
+        const numeroPedido = 'PED-' + Math.floor(100000 + Math.random() * 900000);
+        const codigoRastreio = 'BR' + Math.floor(100000000 + Math.random() * 900000000) + 'BR';
+
+        const novoPedido = {
+            id: numeroPedido,
+            codigoRastreio: codigoRastreio,
+            data: dataAtual.toLocaleDateString('pt-BR') + ' às ' + dataAtual.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            usuarioEmail: usuario ? usuario.email : 'Visitante',
+            itens: itensCarrinho,
+            subtotal: subtotal,
+            desconto: valorDesconto,
+            frete: estado.freteValor,
+            total: totalFinal,
+            statusEtapa: 2, // 1: Recebido, 2: Aprovado, 3: Separação, 4: Trânsito, 5: Entregue
+            status: '✅ Pagamento Aprovado'
+        };
+
+        salvarPedido(novoPedido);
+
+        alert(`Pedido ${novoPedido.id} realizado com sucesso!\nCódigo de Rastreio: ${codigoRastreio}`);
         salvarCarrinho([]);
-        navegaPara('home');
+        estado.descontoPercentual = 0;
+        estado.freteValor = 0;
+
+        if (usuario) {
+            navegaPara('cadastro');
+        } else {
+            navegaPara('home');
+        }
     });
 }
 
-// TELA DE CADASTRO / PERFIL
+// TELA DE CADASTRO / PERFIL EXPANDIDO
 function renderCadastro(container) {
     const usuario = getUsuarioLogado();
 
     if (usuario) {
+        const end = usuario.endereco || {};
+        const dataCadastroStr = usuario.dataCadastro || new Date().toLocaleDateString('pt-BR');
+        const pedidosDoUsuario = getPedidosUsuarioAtual();
+
         container.innerHTML = `
-            <div class="cadastro-wrapper">
-                <div class="cadastro-box" style="text-align: center;">
-                    <h1>Minha Conta</h1>
-                    <p style="margin: 20px 0; color: var(--text-secondary);">
-                        Olá, <strong style="color: white; font-size: 1.1rem;">${usuario.nome}</strong>!<br>
-                        <span>${usuario.email}</span>
-                    </p>
-                    <button id="btnSair" style="background: #ff5252;">Sair da Conta</button>
+            <div class="cadastro-wrapper" style="max-width: 850px; margin: 30px auto; padding: 0 15px;">
+                <div class="cadastro-box" style="text-align: left; background: #1e2038; padding: 30px; border-radius: 12px;">
+                    
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #3f4265; padding-bottom: 20px; margin-bottom: 25px;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 60px; height: 60px; background: #6c5ce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold; color: #fff;">
+                                ${usuario.nome ? usuario.nome.charAt(0).toUpperCase() : '👤'}
+                            </div>
+                            <div>
+                                <h1 style="margin: 0; font-size: 1.5rem; color: #fff;">${usuario.nome}</h1>
+                                <p style="margin: 4px 0 0 0; color: #a0a3c4; font-size: 0.9rem;">${usuario.email}</p>
+                            </div>
+                        </div>
+                        <span style="background: #141526; color: #00e676; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; border: 1px solid #00e676;">
+                            💎 Membro VIP
+                        </span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 25px;">
+                        
+                        <div style="background: #141526; padding: 20px; border-radius: 8px; border: 1px solid #2a2d4a;">
+                            <h3 style="color: #6c5ce7; margin-top: 0; margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                                👤 Dados Pessoais
+                            </h3>
+                            <p style="margin: 8px 0; font-size: 0.9rem; color: #d1d5db;">
+                                <strong style="color: #a0a3c4;">Telefone:</strong> ${usuario.telefone || 'Não informado'}
+                            </p>
+                            <p style="margin: 8px 0; font-size: 0.9rem; color: #d1d5db;">
+                                <strong style="color: #a0a3c4;">CPF:</strong> ${usuario.cpf || 'Não informado'}
+                            </p>
+                            <p style="margin: 8px 0; font-size: 0.9rem; color: #d1d5db;">
+                                <strong style="color: #a0a3c4;">Nascimento:</strong> ${usuario.dataNascimento ? new Date(usuario.dataNascimento).toLocaleDateString('pt-BR') : 'Não informado'}
+                            </p>
+                            <p style="margin: 8px 0; font-size: 0.9rem; color: #d1d5db;">
+                                <strong style="color: #a0a3c4;">Cliente desde:</strong> ${dataCadastroStr}
+                            </p>
+                        </div>
+
+                        <div style="background: #141526; padding: 20px; border-radius: 8px; border: 1px solid #2a2d4a;">
+                            <h3 style="color: #6c5ce7; margin-top: 0; margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                                🏠 Endereço de Entrega
+                            </h3>
+                            ${end.rua ? `
+                                <p style="margin: 8px 0; font-size: 0.9rem; color: #d1d5db;">
+                                    ${end.rua}, Nº ${end.numero}${end.complemento ? `(${end.complemento})` : ''}
+                                </p>
+                                <p style="margin: 8px 0; font-size: 0.9rem; color: #d1d5db;">
+                                    ${end.bairro} — ${end.cidade}/${end.uf}
+                                </p>
+                                <p style="margin: 8px 0; font-size: 0.9rem; color: #d1d5db;">
+                                    <strong style="color: #a0a3c4;">CEP:</strong> ${end.cep}
+                                </p>
+                            ` : '<p style="font-size: 0.9rem; color: #a0a3c4;">Nenhum endereço cadastrado ainda.</p>'}
+                        </div>
+
+                    </div>
+
+                    <!-- BUSCA DIRETA DE RASTREAMENTO -->
+                    <div style="background: #141526; padding: 20px; border-radius: 8px; border: 1px solid #2a2d4a; margin-bottom: 25px;">
+                        <h3 style="color: #6c5ce7; margin-top: 0; margin-bottom: 10px; font-size: 1.1rem;">
+                            🔎 Consultar Rastreamento Rápido
+                        </h3>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="inputBuscarRastreio" placeholder="Digite o Código do Pedido ou Rastreio (ex: PED-123456 ou BR123456789BR)" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #3f4265; background: #1e2038; color: #fff; font-size: 0.9rem; outline: none;">
+                            <button id="btnBuscarRastreio" style="background: #6c5ce7; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold;">Buscar</button>
+                        </div>
+                        <div id="resultadoRastreioBusca" style="margin-top: 15px;"></div>
+                    </div>
+
+                    <div style="background: #141526; padding: 20px; border-radius: 8px; border: 1px solid #2a2d4a; margin-bottom: 25px;">
+                        <h3 style="color: #6c5ce7; margin-top: 0; margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between;">
+                            <span>📦 Histórico e Rastreamento de Pedidos</span>
+                            <span style="font-size: 0.85rem; color: #a0a3c4; font-weight: normal;">${pedidosDoUsuario.length} pedido(s)</span>
+                        </h3>
+
+                        ${pedidosDoUsuario.length === 0 ? `
+                            <p style="font-size: 0.9rem; color: #a0a3c4; margin: 0;">Você ainda não realizou nenhum pedido na loja.</p>
+                        ` : `
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                ${pedidosDoUsuario.map(ped => `
+                                    <div style="background: #1e2038; border: 1px solid #3f4265; border-radius: 8px; padding: 15px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2d4a; padding-bottom: 10px; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                                            <div>
+                                                <strong style="color: #fff; font-size: 1rem;">Código: ${ped.id}</strong>
+                                                <div style="font-size: 0.8rem; color: #a0a3c4; margin-top: 2px;">📅 ${ped.data}</div>
+                                            </div>
+                                            <span style="background: #1a382b; color: #00e676; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; border: 1px solid #00e676;">
+                                                ${ped.status}
+                                            </span>
+                                        </div>
+
+                                        <div style="margin-bottom: 10px;">
+                                            ${ped.itens.map(item => `
+                                                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; color: #d1d5db; margin-bottom: 6px;">
+                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                        <img src="${item.imagem}" alt="${item.nome}" style="width: 32px; height: 32px; object-fit: contain; background: #141526; border-radius: 4px; padding: 2px;">
+                                                        <span><strong>${item.qtd}x</strong>${item.nome}</span>
+                                                    </div>
+                                                    <span>R$ ${(item.preco * item.qtd).toFixed(2).replace('.', ',')}</span>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+
+                                        <div style="border-top: 1px dashed #3f4265; padding-top: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;">
+                                            <span style="color: #a0a3c4;">Total do Pedido:</span>
+                                            <strong style="color: #00e676; font-size: 1.05rem;">R$ ${ped.total.toFixed(2).replace('.', ',')}</strong>
+                                        </div>
+
+                                        ${renderLinhaTempoRastreamentoHTML(ped)}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button id="btnIrConfigEditar" style="flex: 1; background: #6c5ce7; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.95rem;">
+                            ✏️ Editar Informações
+                        </button>
+                        <button id="btnSair" style="flex: 1; background: #ff5252; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.95rem;">
+                            🚪 Sair da Conta
+                        </button>
+                    </div>
+
                 </div>
             </div>
         `;
 
         document.getElementById('btnSair').addEventListener('click', fazerLogout);
+        document.getElementById('btnIrConfigEditar').addEventListener('click', () => navegaPara('configuracoes'));
+
+        const btnBuscarRastreio = document.getElementById('btnBuscarRastreio');
+        if (btnBuscarRastreio) {
+            btnBuscarRastreio.addEventListener('click', () => {
+                const query = document.getElementById('inputBuscarRastreio').value.trim().toUpperCase();
+                const containerResultado = document.getElementById('resultadoRastreioBusca');
+                const todosPedidos = getPedidos();
+
+                const encontrado = todosPedidos.find(p => p.id.toUpperCase() === query || (p.codigoRastreio && p.codigoRastreio.toUpperCase() === query));
+
+                if (encontrado) {
+                    containerResultado.innerHTML = `
+                        <div style="background: #1e2038; padding: 12px; border-radius: 6px; border: 1px solid #6c5ce7;">
+                            <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #fff;"><strong>Pedido Encontrado:</strong> #${encontrado.id}</p>
+                            ${renderLinhaTempoRastreamentoHTML(encontrado)}
+                        </div>
+                    `;
+                } else {
+                    containerResultado.innerHTML = `<p style="color: #ff5252; font-size: 0.85rem; margin: 5px 0 0 0;">Nenhum pedido encontrado com este código.</p>`;
+                }
+            });
+        }
         return;
     }
 
     container.innerHTML = `
-        <div class="cadastro-wrapper">
-            <div class="cadastro-box">
-                <h1>Crie sua Conta</h1>
-                <h2>Junte-se ao Collector's Hub</h2>
+        <div class="cadastro-wrapper" style="max-width: 650px; margin: 30px auto; padding: 0 15px;">
+            <div class="cadastro-box" style="background: #1e2038; padding: 30px; border-radius: 12px;">
+                <h1 style="text-align: center; margin-bottom: 5px;">Crie sua Conta</h1>
+                <p style="text-align: center; color: #a0a3c4; margin-bottom: 25px;">Junte-se à comunidade Collector's Hub</p>
 
                 <form id="cadastroForm">
-                    <div class="campo">
-                        <label for="nome">Nome Completo</label>
-                        <input type="text" id="nome" placeholder="Digite seu nome" required>
+                    <h3 style="color: #6c5ce7; font-size: 1rem; border-bottom: 1px solid #3f4265; padding-bottom: 6px; margin-bottom: 15px;">1. Dados Acesso & Pessoais</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px;">
+                        <div class="campo">
+                            <label for="nome">Nome Completo *</label>
+                            <input type="text" id="nome" placeholder="Digite seu nome completo" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="email">E-mail *</label>
+                            <input type="email" id="email" placeholder="seuemail@exemplo.com" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="telefone">Telefone / WhatsApp</label>
+                            <input type="tel" id="telefone" placeholder="(00) 90000-0000">
+                        </div>
+
+                        <div class="campo">
+                            <label for="cpf">CPF</label>
+                            <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14">
+                        </div>
+
+                        <div class="campo">
+                            <label for="dataNascimento">Data de Nascimento</label>
+                            <input type="date" id="dataNascimento" style="background: #141526; border: 1px solid #3f4265; color: #fff; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box;">
+                        </div>
                     </div>
 
-                    <div class="campo">
-                        <label for="email">E-mail</label>
-                        <input type="email" id="email" placeholder="seuemail@exemplo.com" required>
+                    <h3 style="color: #6c5ce7; font-size: 1rem; border-bottom: 1px solid #3f4265; padding-bottom: 6px; margin: 20px 0 15px 0;">2. Endereço de Entrega</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px;">
+                        <div class="campo">
+                            <label for="cep">CEP</label>
+                            <input type="text" id="cep" placeholder="00000-000" maxlength="9">
+                        </div>
+
+                        <div class="campo">
+                            <label for="rua">Rua / Avenida</label>
+                            <input type="text" id="rua" placeholder="Nome da rua">
+                        </div>
+
+                        <div class="campo">
+                            <label for="numero">Número</label>
+                            <input type="text" id="numero" placeholder="Ex: 123">
+                        </div>
+
+                        <div class="campo">
+                            <label for="complemento">Complemento</label>
+                            <input type="text" id="complemento" placeholder="Apt, Bloco, etc.">
+                        </div>
+
+                        <div class="campo">
+                            <label for="bairro">Bairro</label>
+                            <input type="text" id="bairro" placeholder="Nome do bairro">
+                        </div>
+
+                        <div class="campo" style="display: flex; gap: 10px;">
+                            <div style="flex: 2;">
+                                <label for="cidade">Cidade</label>
+                                <input type="text" id="cidade" placeholder="Cidade">
+                            </div>
+                            <div style="flex: 1;">
+                                <label for="uf">UF</label>
+                                <input type="text" id="uf" placeholder="SP" maxlength="2" style="text-transform: uppercase;">
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="campo">
-                        <label for="senha">Senha</label>
-                        <input type="password" id="senha" placeholder="••••••••" required minlength="6">
+                    <h3 style="color: #6c5ce7; font-size: 1rem; border-bottom: 1px solid #3f4265; padding-bottom: 6px; margin: 20px 0 15px 0;">3. Senha de Acesso</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px;">
+                        <div class="campo">
+                            <label for="senha">Senha *</label>
+                            <input type="password" id="senha" placeholder="••••••••" required minlength="6">
+                        </div>
+
+                        <div class="campo">
+                            <label for="confirmarSenha">Confirmar Senha *</label>
+                            <input type="password" id="confirmarSenha" placeholder="••••••••" required>
+                        </div>
                     </div>
 
-                    <div class="campo">
-                        <label for="confirmarSenha">Confirmar Senha</label>
-                        <input type="password" id="confirmarSenha" placeholder="••••••••" required>
-                    </div>
-
-                    <button type="submit">Cadastrar</button>
+                    <button type="submit" style="margin-top: 25px; width: 100%; padding: 14px; background: #6c5ce7; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer;">
+                        ✅ Concluir Cadastro
+                    </button>
                 </form>
             </div>
         </div>
@@ -863,6 +1222,18 @@ function renderCadastro(container) {
 
         const nome = document.getElementById('nome').value.trim();
         const email = document.getElementById('email').value.trim();
+        const telefone = document.getElementById('telefone').value.trim();
+        const cpf = document.getElementById('cpf').value.trim();
+        const dataNascimento = document.getElementById('dataNascimento').value;
+
+        const cep = document.getElementById('cep').value.trim();
+        const rua = document.getElementById('rua').value.trim();
+        const numero = document.getElementById('numero').value.trim();
+        const complemento = document.getElementById('complemento').value.trim();
+        const bairro = document.getElementById('bairro').value.trim();
+        const cidade = document.getElementById('cidade').value.trim();
+        const uf = document.getElementById('uf').value.trim().toUpperCase();
+
         const s1 = document.getElementById('senha').value;
         const s2 = document.getElementById('confirmarSenha').value;
 
@@ -871,7 +1242,25 @@ function renderCadastro(container) {
             return;
         }
 
-        salvarUsuario({ nome, email });
+        const novoUsuario = {
+            nome,
+            email,
+            telefone,
+            cpf,
+            dataNascimento,
+            dataCadastro: new Date().toLocaleDateString('pt-BR'),
+            endereco: {
+                cep,
+                rua,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                uf
+            }
+        };
+
+        salvarUsuario(novoUsuario);
         alert(`Bem-vindo(a), ${nome}! Seu cadastro foi salvo com sucesso.`);
         navegaPara('home');
     });
@@ -881,24 +1270,27 @@ function renderCadastro(container) {
 function renderConfiguracoes(container) {
     const usuario = getUsuarioLogado();
     const config = getConfiguracoes();
+    const end = (usuario && usuario.endereco) ? usuario.endereco : {};
 
     container.innerHTML = `
-        <div class="config-wrapper">
-            <div class="config-box">
-                <h1>⚙️ Configurações</h1>
+        <div class="config-wrapper" style="max-width: 750px; margin: 30px auto; padding: 0 15px;">
+            <div class="config-box" style="background: #1e2038; padding: 30px; border-radius: 12px;">
+                <h1 style="margin-bottom: 20px; display: flex; align-items: center;">
+                    ${getIconeConfigHTML('circulo')} Configurações & Perfil
+                </h1>
                 
-                <div class="config-secao">
-                    <h2>Preferências do Site</h2>
+                <div class="config-secao" style="margin-bottom: 30px;">
+                    <h2 style="color: #6c5ce7; font-size: 1.1rem; border-bottom: 1px solid #3f4265; padding-bottom: 8px;">Preferências do Site</h2>
                     
-                    <div class="campo-config">
+                    <div class="campo-config" style="margin-top: 15px;">
                         <label>Tema de Visualização</label>
-                        <select id="selectTema">
+                        <select id="selectTema" style="background: #141526; color: #fff; border: 1px solid #3f4265; padding: 8px; border-radius: 6px; width: 100%;">
                             <option value="dark" ${config.tema === 'dark' ? 'selected' : ''}>🌙 Modo Escuro (Padrão)</option>
                             <option value="light" ${config.tema === 'light' ? 'selected' : ''}>☀️ Modo Claro</option>
                         </select>
                     </div>
 
-                    <div class="campo-config switch-campo">
+                    <div class="campo-config switch-campo" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
                         <span>Receber Notificações de Promoções</span>
                         <label class="switch">
                             <input type="checkbox" id="checkNotificacoes" ${config.notificacoes ? 'checked' : ''}>
@@ -908,22 +1300,77 @@ function renderConfiguracoes(container) {
                 </div>
 
                 <div class="config-secao">
-                    <h2>Dados da Conta</h2>
+                    <h2 style="color: #6c5ce7; font-size: 1.1rem; border-bottom: 1px solid #3f4265; padding-bottom: 8px;">Atualizar Dados Cadastrais</h2>
                     ${usuario ? `
-                        <form id="formAtualizarConta">
-                            <div class="campo">
-                                <label for="configNome">Nome Completo</label>
-                                <input type="text" id="configNome" value="${usuario.nome}" required>
+                        <form id="formAtualizarConta" style="margin-top: 15px;">
+                            
+                            <h4 style="color: #a0a3c4; margin-bottom: 10px;">Informações Pessoais</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 15px;">
+                                <div class="campo">
+                                    <label>Nome Completo</label>
+                                    <input type="text" id="configNome" value="${usuario.nome || ''}" required>
+                                </div>
+                                <div class="campo">
+                                    <label>E-mail</label>
+                                    <input type="email" id="configEmail" value="${usuario.email || ''}" required>
+                                </div>
+                                <div class="campo">
+                                    <label>Telefone</label>
+                                    <input type="tel" id="configTelefone" value="${usuario.telefone || ''}">
+                                </div>
+                                <div class="campo">
+                                    <label>CPF</label>
+                                    <input type="text" id="configCpf" value="${usuario.cpf || ''}">
+                                </div>
+                                <div class="campo">
+                                    <label>Data de Nascimento</label>
+                                    <input type="date" id="configDataNascimento" value="${usuario.dataNascimento || ''}" style="background: #141526; border: 1px solid #3f4265; color: #fff; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box;">
+                                </div>
                             </div>
-                            <div class="campo">
-                                <label for="configEmail">E-mail</label>
-                                <input type="email" id="configEmail" value="${usuario.email}" required>
+
+                            <h4 style="color: #a0a3c4; margin: 20px 0 10px 0;">Endereço de Entrega</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                                <div class="campo">
+                                    <label>CEP</label>
+                                    <input type="text" id="configCep" value="${end.cep || ''}">
+                                </div>
+                                <div class="campo">
+                                    <label>Rua / Avenida</label>
+                                    <input type="text" id="configRua" value="${end.rua || ''}">
+                                </div>
+                                <div class="campo">
+                                    <label>Número</label>
+                                    <input type="text" id="configNumero" value="${end.numero || ''}">
+                                </div>
+                                <div class="campo">
+                                    <label>Complemento</label>
+                                    <input type="text" id="configComplemento" value="${end.complemento || ''}">
+                                </div>
+                                <div class="campo">
+                                    <label>Bairro</label>
+                                    <input type="text" id="configBairro" value="${end.bairro || ''}">
+                                </div>
+                                <div class="campo" style="display: flex; gap: 10px;">
+                                    <div style="flex: 2;">
+                                        <label>Cidade</label>
+                                        <input type="text" id="configCidade" value="${end.cidade || ''}">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label>UF</label>
+                                        <input type="text" id="configUf" value="${end.uf || ''}" maxlength="2" style="text-transform: uppercase;">
+                                    </div>
+                                </div>
                             </div>
-                            <button type="submit" class="btn-salvar">Salvar Alterações do Perfil</button>
+
+                            <button type="submit" class="btn-salvar" style="width: 100%; padding: 12px; background: #6c5ce7; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                                💾 Salvar Alterações do Perfil
+                            </button>
                         </form>
                     ` : `
-                        <p style="color: var(--text-secondary); margin-bottom: 15px;">Você não está conectado a nenhuma conta.</p>
-                        <button class="btn" id="btnIrLoginConfig">Fazer Login / Cadastrar</button>
+                        <p style="color: #a0a3c4; margin: 15px 0;">Você não está conectado a nenhuma conta.</p>
+                        <button class="btn" id="btnIrLoginConfig" style="background: #6c5ce7; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
+                            Fazer Login / Cadastrar
+                        </button>
                     `}
                 </div>
             </div>
@@ -944,10 +1391,26 @@ function renderConfiguracoes(container) {
     if (formConta) {
         formConta.addEventListener('submit', (e) => {
             e.preventDefault();
-            const novoNome = document.getElementById('configNome').value.trim();
-            const novoEmail = document.getElementById('configEmail').value.trim();
 
-            salvarUsuario({ nome: novoNome, email: novoEmail });
+            const usuarioAtualizado = {
+                ...usuario,
+                nome: document.getElementById('configNome').value.trim(),
+                email: document.getElementById('configEmail').value.trim(),
+                telefone: document.getElementById('configTelefone').value.trim(),
+                cpf: document.getElementById('configCpf').value.trim(),
+                dataNascimento: document.getElementById('configDataNascimento').value,
+                endereco: {
+                    cep: document.getElementById('configCep').value.trim(),
+                    rua: document.getElementById('configRua').value.trim(),
+                    numero: document.getElementById('configNumero').value.trim(),
+                    complemento: document.getElementById('configComplemento').value.trim(),
+                    bairro: document.getElementById('configBairro').value.trim(),
+                    cidade: document.getElementById('configCidade').value.trim(),
+                    uf: document.getElementById('configUf').value.trim().toUpperCase()
+                }
+            };
+
+            salvarUsuario(usuarioAtualizado);
             alert('Dados da conta atualizados com sucesso!');
             render();
         });

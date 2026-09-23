@@ -39,7 +39,7 @@
   },
   {
     "id": 5,
-    "nome": "Action Figure Gol D. Roger",
+    "nome": "Action Figure Roger",
     "preco": 199.9,
     "imagem": "imagens/roger.png",
     "categoria": "ac",
@@ -514,5 +514,24 @@
     "categoria": "colecionaveis",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 57,
+    "nome": "Invencível #1: Negócios de Família",
+    "preco": 19.9,
+    "imagem": "imagens/invencible.jpeg",
+    "categoria": "hq",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 58,
+    "nome": "Beastars, Vol. 1",
+    "preco": 77.98,
+    "imagem": "imagens/beastars.jfif",
+    "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
   }
+
 ]
