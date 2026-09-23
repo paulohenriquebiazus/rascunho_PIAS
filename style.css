@@ -703,3 +703,144 @@ body.light-mode .campo-config select {
     font-size: 1.8rem;
     color: var(--text-primary);
 }
+
+/* Posicionamento do card relativo para o botão ficar sobre a imagem */
+.card, .card-destaque {
+    position: relative;
+}
+
+/* Botão de Favoritar */
+.btn-favorito {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 5;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.btn-favorito:hover {
+    transform: scale(1.15);
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.btn-favorito.ativo {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Resumo no card */
+.card-avaliacao-resumo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 6px 0;
+}
+
+.estrelas-exibicao {
+    color: #ffca28;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+}
+
+.btn-ver-avaliacoes {
+    background: transparent;
+    border: 1px solid #3f4265;
+    color: #a0a3c4;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 8px;
+    width: 100%;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
+
+.btn-ver-avaliacoes:hover {
+    background: #2a2d4a;
+    color: #fff;
+}
+
+/* Painel de Avaliações */
+.painel-avaliacoes {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #2a2d4a;
+    text-align: left;
+}
+
+.box-avaliacoes h4 {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.form-avaliacao {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.campo-estrelas select {
+    background: #1e2038;
+    color: #ffca28;
+    border: 1px solid #3f4265;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.form-avaliacao textarea {
+    background: #1e2038;
+    border: 1px solid #3f4265;
+    color: #fff;
+    padding: 8px;
+    border-radius: 6px;
+    resize: none;
+    height: 50px;
+    font-size: 0.85rem;
+}
+
+.btn-enviar-aval {
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+/* Lista de Comentários */
+.item-comentario {
+    background: #1a1c30;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.header-comentario {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+}
+
+.item-comentario p {
+    font-size: 0.85rem;
+    color: #d1d5db;
+    margin: 4px 0;
+}
+
+.data-comentario {
+    color: #6b7280;
+    font-size: 0.7rem;
+}

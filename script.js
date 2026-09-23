@@ -1,21 +1,23 @@
 // ==========================================
 // 1. ESTADO GLOBAL E VARIÁVEIS
 // ==========================================
-let produtos = []; // Será preenchido via produtos.json
+let produtos = []; // Preenchido via produtos.json
 
 let estado = {
     telaAtual: 'home',
     categoriaFiltro: 'todos',
+    termoBusca: '',
+    produtoModalId: null,
     descontoPercentual: 0,
     freteValor: 0
 };
 
 // ==========================================
-// LOGOS E NOMES POR CATEGORIA
-// (Ajuste os caminhos abaixo conforme os nomes reais dos seus arquivos na pasta 'imagens/')
+// DICIONÁRIOS E MAPEAMENTOS
 // ==========================================
 const logosCategorias = {
     'todos': 'imagens/Logo.png',
+    'favoritos': 'imagens/Logo.png',
     'canecas': 'imagens/logo-canecas.png',
     'ac': 'imagens/logo-ac.png',
     'quadros': 'imagens/logo-quadros.png',
@@ -27,7 +29,18 @@ const logosCategorias = {
     'roupas': 'imagens/logo-roupas.png'
 };
 
-// Atualiza a logo no Header de acordo com a categoria selecionada
+const nomesCategorias = {
+    'canecas': 'Caneca Geek',
+    'ac': 'Action Figure',
+    'roupas': 'Vestuário / Cosplay',
+    'quadros': 'Quadro / Decorativo',
+    'mangas': 'Mangá',
+    'ln': 'Light Novel',
+    'hq': 'História em Quadrinhos',
+    'games': 'Jogo / Video Game',
+    'colecionaveis': 'Item Colecionável'
+};
+
 function atualizarLogoHeader() {
     const logoImg = document.querySelector('#logoLink img');
     if (logoImg) {
@@ -35,7 +48,7 @@ function atualizarLogoHeader() {
         const caminhoLogo = logosCategorias[catAtiva] || logosCategorias['todos'];
         
         logoImg.src = caminhoLogo;
-        logoImg.alt = `Logo ${nomesCategorias[catAtiva] || "Collector's Hub"}`;
+        logoImg.alt = `Logo ${catAtiva}`;
     }
 }
 
@@ -50,10 +63,7 @@ async function carregarProdutos() {
             throw new Error(`Erro na requisição: ${resposta.status}`);
         }
 
-        // Carrega a lista de produtos vinda do JSON
         produtos = await resposta.json();
-
-        // Renderiza a tela assim que os dados chegarem
         render();
 
     } catch (erro) {
@@ -63,7 +73,7 @@ async function carregarProdutos() {
             main.innerHTML = `
                 <div style="text-align: center; padding: 50px; color: #ff5252;">
                     <h2>⚠️ Não foi possível carregar os produtos</h2>
-                    <p>Verifique se o arquivo <strong>produtos.json</strong> está na mesma pasta do projeto e se você está executando em um servidor local (ex: Live Server).</p>
+                    <p>Verifique se o arquivo <strong>produtos.json</strong> está salvo na mesma pasta do arquivo HTML.</p>
                 </div>
             `;
         }
@@ -124,7 +134,183 @@ function atualizarBadge() {
 }
 
 // ==========================================
-// 5. CONFIGURAÇÕES E TEMA (LOCALSTORAGE)
+// 5. GERENCIAMENTO DE FAVORITOS (LOCALSTORAGE)
+// ==========================================
+function getFavoritos() {
+    return JSON.parse(localStorage.getItem("favoritos_hub")) || [];
+}
+
+function salvarFavoritos(favoritos) {
+    localStorage.setItem("favoritos_hub", JSON.stringify(favoritos));
+}
+
+function toggleFavorito(id) {
+    let favoritos = getFavoritos();
+    if (favoritos.includes(id)) {
+        favoritos = favoritos.filter(favId => favId !== id);
+    } else {
+        favoritos.push(id);
+    }
+    salvarFavoritos(favoritos);
+    render();
+}
+
+// ==========================================
+// 5.1 GERENCIAMENTO DE AVALIAÇÕES (LOCALSTORAGE)
+// ==========================================
+function getAvaliacoes() {
+    return JSON.parse(localStorage.getItem("avaliacoes_hub")) || {};
+}
+
+function salvarAvaliacoes(avaliacoes) {
+    localStorage.setItem("avaliacoes_hub", JSON.stringify(avaliacoes));
+}
+
+function adicionarAvaliacao(produtoId, nota, comentario) {
+    const usuario = getUsuarioLogado();
+    const nomeAutor = usuario ? usuario.nome : "Anônimo";
+    
+    const avaliacoes = getAvaliacoes();
+    if (!avaliacoes[produtoId]) {
+        avaliacoes[produtoId] = [];
+    }
+
+    avaliacoes[produtoId].push({
+        autor: nomeAutor,
+        nota: Number(nota),
+        comentario: comentario.trim(),
+        data: new Date().toLocaleDateString('pt-BR')
+    });
+
+    salvarAvaliacoes(avaliacoes);
+    render();
+}
+
+function getResumoAvaliacoes(produtoId) {
+    const avaliacoes = getAvaliacoes()[produtoId] || [];
+    if (avaliacoes.length === 0) return { media: 0, total: 0 };
+
+    const soma = avaliacoes.reduce((acc, curr) => acc + curr.nota, 0);
+    const media = (soma / avaliacoes.length).toFixed(1);
+    return { media: Number(media), total: avaliacoes.length };
+}
+
+function renderEstrelasHTML(nota) {
+    const cheias = Math.round(nota);
+    let html = '';
+    for (let i = 1; i <= 5; i++) {
+        html += i <= cheias ? '★' : '☆';
+    }
+    return `<span class="estrelas-exibicao" style="color: #ffca28;">${html}</span>`;
+}
+
+function renderSecaoAvaliacoesHTML(produtoId) {
+    const lista = getAvaliacoes()[produtoId] || [];
+
+    return `
+        <div class="box-avaliacoes">
+            <h4 style="margin-bottom: 8px; color: #fff;">Avaliações do Produto</h4>
+            
+            <form class="form-avaliacao" data-id="${produtoId}">
+                <div class="campo-estrelas" style="margin-bottom: 8px;">
+                    <label style="font-size: 0.85rem; color: #a0a3c4;">Sua nota: </label>
+                    <select name="nota" required style="background: #1e2038; color: #ffca28; border: 1px solid #3f4265; padding: 4px; border-radius: 4px;">
+                        <option value="5">★★★★★ (5)</option>
+                        <option value="4">★★★★☆ (4)</option>
+                        <option value="3">★★★☆☆ (3)</option>
+                        <option value="2">★★☆☆☆ (2)</option>
+                        <option value="1">★☆☆☆☆ (1)</option>
+                    </select>
+                </div>
+                <textarea name="comentario" placeholder="Escreva o que achou do produto..." required maxlength="200" style="width: 100%; background: #1e2038; border: 1px solid #3f4265; color: #fff; padding: 8px; border-radius: 6px; resize: none; height: 50px; font-size: 0.85rem; margin-bottom: 8px; box-sizing: border-box;"></textarea>
+                <button type="submit" class="btn-enviar-aval" style="background: #6c5ce7; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; width: 100%;">Enviar Avaliação</button>
+            </form>
+
+            <div class="lista-comentarios" style="margin-top: 12px;">
+                ${lista.length === 0 ? '<p style="font-size: 0.8rem; color: #a0a3c4;">Nenhum comentário ainda.</p>' : ''}
+                ${lista.map(item => `
+                    <div class="item-comentario" style="background: #1a1c30; padding: 8px; border-radius: 6px; margin-bottom: 8px; text-align: left;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                            <strong style="color: #fff;">${item.autor}</strong>
+                            <span>${renderEstrelasHTML(item.nota)}</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: #d1d5db; margin: 4px 0;">${item.comentario}</p>
+                        <small style="color: #6b7280; font-size: 0.7rem;">${item.data}</small>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// 6. MODAL DE DETALHES DO PRODUTO (INFO COMPLETA)
+// ==========================================
+function renderModalDetalhesHTML() {
+    if (!estado.produtoModalId) return '';
+
+    const p = produtos.find(item => item.id === estado.produtoModalId);
+    if (!p) return '';
+
+    const { media, total } = getResumoAvaliacoes(p.id);
+    const semEstoque = p.estoque <= 0;
+    const nomeCategoria = nomesCategorias[p.categoria] || p.categoria;
+
+    // Descrição padrão dinâmica caso não esteja definida no JSON
+    const descricao = p.descricao || `Produto oficial e de alta qualidade: <strong>${p.nome}</strong>. Ideal para fãs, colecionadores e amantes do universo geek e pop culture. Adicione à sua coleção hoje mesmo!`;
+
+    return `
+        <div id="modalDetalhesOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+            <div style="background: #1e2038; border-radius: 12px; max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 25px; position: relative; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+                
+                <button id="btnFecharModal" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #a0a3c4; font-size: 1.5rem; cursor: pointer;">✖</button>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 10px;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <img src="${p.imagem}" alt="${p.nome}" style="width: 100%; max-height: 300px; border-radius: 8px; object-fit: contain; background: #141526; padding: 10px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <span style="font-size: 0.75rem; background: #6c5ce7; color: #fff; padding: 4px 10px; border-radius: 12px; font-weight: bold; text-transform: uppercase;">${nomeCategoria}</span>
+                            <h2 style="margin: 12px 0 6px 0; font-size: 1.4rem; color: #fff;">${p.nome}</h2>
+                            
+                            <div style="margin-bottom: 12px;">
+                                ${renderEstrelasHTML(media)}
+                                <small style="color: #a0a3c4;">(${total > 0 ? `${media} de 5 (${total} avaliações)` : 'Sem avaliações ainda'})</small>
+                            </div>
+
+                            ${renderPrecoHTML(p)}
+
+                            <p style="font-size: 0.9rem; color: #c0c3e0; margin: 15px 0; line-height: 1.5;">
+                                ${descricao}
+                            </p>
+
+                            <div style="background: #141526; padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                    <span style="color: #a0a3c4;">Código (ID):</span>
+                                    <strong style="color: #fff;">#${p.id}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: #a0a3c4;">Disponibilidade:</span>
+                                    <strong style="color: ${semEstoque ? '#ff5252' : '#00e676'};">${semEstoque ? 'Esgotado' : `${p.estoque} unidades`}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn-comprar" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="width: 100%; padding: 12px; font-size: 1rem; cursor: pointer;">
+                            ${semEstoque ? 'Esgotado' : '🛒 Adicionar ao Carrinho'}
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// 7. CONFIGURAÇÕES E TEMA (LOCALSTORAGE)
 // ==========================================
 function getConfiguracoes() {
     return JSON.parse(localStorage.getItem("config_hub")) || {
@@ -148,7 +334,7 @@ function aplicarTema(tema) {
 }
 
 // ==========================================
-// 6. ROTEADOR E NAVEGAÇÃO
+// 8. ROTEADOR E NAVEGAÇÃO
 // ==========================================
 function navegaPara(tela) {
     estado.telaAtual = tela;
@@ -171,15 +357,38 @@ function render() {
         renderConfiguracoes(main);
     }
 
-    atualizarLogoHeader(); // Atualiza a logo conforme a categoria selecionada
-    
+    // Gerenciamento de Exibição do Modal
+    const modalHTML = renderModalDetalhesHTML();
+    if (modalHTML) {
+        main.insertAdjacentHTML('beforeend', modalHTML);
+        
+        const btnFechar = document.getElementById('btnFecharModal');
+        const overlay = document.getElementById('modalDetalhesOverlay');
+
+        if (btnFechar) {
+            btnFechar.addEventListener('click', () => {
+                estado.produtoModalId = null;
+                render();
+            });
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    estado.produtoModalId = null;
+                    render();
+                }
+            });
+        }
+    }
+
+    atualizarLogoHeader();
 }
 
 // ==========================================
-// 7. RENDERS DE TELAS
+// 9. RENDERS DE TELAS
 // ==========================================
 
-// Helper para preços
 function renderPrecoHTML(p) {
     if (p.precoOriginal && p.precoOriginal > p.preco) {
         const pctDesconto = Math.round(((p.precoOriginal - p.preco) / p.precoOriginal) * 100);
@@ -196,27 +405,61 @@ function renderPrecoHTML(p) {
 
 // TELA PRINCIPAL / HOME
 function renderHome(container) {
+    const favoritos = getFavoritos();
     const produtosDestaque = produtos.filter(p => p.destaque);
-    const listaFiltrada = estado.categoriaFiltro === 'todos' 
-        ? produtos 
-        : produtos.filter(p => p.categoria === estado.categoriaFiltro);
+    
+    // 1. Filtragem por categoria
+    let listaFiltrada = produtos;
+    if (estado.categoriaFiltro === 'favoritos') {
+        listaFiltrada = produtos.filter(p => favoritos.includes(p.id));
+    } else if (estado.categoriaFiltro !== 'todos') {
+        listaFiltrada = produtos.filter(p => p.categoria === estado.categoriaFiltro);
+    }
 
-    const htmlDestaques = estado.categoriaFiltro === 'todos' ? `
+    // 2. Filtragem por busca textual
+    if (estado.termoBusca.trim() !== '') {
+        const termo = estado.termoBusca.toLowerCase().trim();
+        listaFiltrada = listaFiltrada.filter(p => p.nome.toLowerCase().includes(termo));
+    }
+
+    const htmlDestaques = (estado.categoriaFiltro === 'todos' && !estado.termoBusca) ? `
         <section class="destaques-section">
             <h2 class="secao-titulo">🔥 Destaques da Semana</h2>
             <div class="destaques-grid">
                 ${produtosDestaque.map(p => {
                     const semEstoque = p.estoque <= 0;
+                    const ehFavorito = favoritos.includes(p.id);
+                    const { media, total } = getResumoAvaliacoes(p.id);
+
                     return `
                         <div class="card-destaque ${semEstoque ? 'card-esgotado' : ''}">
+                            <button class="btn-favorito ${ehFavorito ? 'ativo' : ''}" data-id="${p.id}" title="${ehFavorito ? 'Remover dos Favoritos' : 'Favoritar'}">
+                                ${ehFavorito ? '❤️' : '🤍'}
+                            </button>
                             <span class="badge-destaque">EM ALTA</span>
-                            <img src="${p.imagem}" alt="${p.nome}">
+                            <img src="${p.imagem}" alt="${p.nome}" class="btn-detalhes" data-id="${p.id}" style="cursor: pointer;">
                             <div class="destaque-info">
-                                <h3>${p.nome}</h3>
+                                <h3 class="btn-detalhes" data-id="${p.id}" style="cursor: pointer;">${p.nome}</h3>
+                                
+                                <div class="card-avaliacao-resumo" style="margin: 4px 0;">
+                                    ${renderEstrelasHTML(media)}
+                                    <small style="color: #a0a3c4;">(${total > 0 ? `${media} • ${total}` : 'Sem avaliações'})</small>
+                                </div>
+
                                 ${renderPrecoHTML(p)}
-                                <button class="btn-comprar" data-id="${p.id}" ${semEstoque ? 'disabled' : ''}>
-                                    ${semEstoque ? 'Esgotado' : '⚡ Comprar Agora'}
-                                </button>
+                                
+                                <div style="display: flex; gap: 6px; margin-top: 10px;">
+                                    <button class="btn-detalhes" data-id="${p.id}" style="flex: 1; background: #3f4265; color: #fff; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">👁️ Detalhes</button>
+                                    <button class="btn-comprar" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="flex: 1.5;">
+                                        ${semEstoque ? 'Esgotado' : '⚡ Comprar'}
+                                    </button>
+                                </div>
+
+                                <button class="btn-ver-avaliacoes" data-id="${p.id}" style="background: transparent; border: 1px solid #3f4265; color: #a0a3c4; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; width: 100%; font-size: 0.85rem;">💬 Avaliações</button>
+                                
+                                <div class="painel-avaliacoes" id="painel-aval-${p.id}" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a2d4a;">
+                                    ${renderSecaoAvaliacoesHTML(p.id)}
+                                </div>
                             </div>
                         </div>
                     `;
@@ -226,29 +469,112 @@ function renderHome(container) {
         <h2 class="secao-titulo">🛒 Todos os Produtos</h2>
     ` : '';
 
+    const tituloSecao = estado.categoriaFiltro === 'favoritos' ? '❤️ Meus Favoritos' : '🛒 Produtos';
+
+    const htmlBarraBusca = `
+        <div class="busca-wrapper" style="max-width: 600px; margin: 0 auto 25px auto; padding: 0 15px;">
+            <div style="position: relative; display: flex; align-items: center;">
+                <input 
+                    type="text" 
+                    id="inputBuscaProdutos" 
+                    placeholder="🔍 Digite o nome do produto..." 
+                    value="${estado.termoBusca}"
+                    style="width: 100%; padding: 12px 16px; padding-right: 40px; border-radius: 8px; border: 1px solid #3f4265; background: #1e2038; color: #fff; font-size: 0.95rem; box-sizing: border-box; outline: none;"
+                >
+                ${estado.termoBusca ? `
+                    <button id="btnLimparBusca" style="position: absolute; right: 10px; background: transparent; border: none; color: #a0a3c4; cursor: pointer; font-size: 1.1rem;">✖</button>
+                ` : ''}
+            </div>
+        </div>
+    `;
+
     container.innerHTML = `
+        ${htmlBarraBusca}
         ${htmlDestaques}
+        ${(estado.categoriaFiltro !== 'todos' || estado.termoBusca) ? `<h2 class="secao-titulo">${tituloSecao}${estado.termoBusca ? `(Resultados para "${estado.termoBusca}")` : ''}</h2>` : ''}
+        ${listaFiltrada.length === 0 ? `<p style="text-align: center; padding: 40px; color: #a0a3c4;">Nenhum produto encontrado.</p>` : ''}
         <div class="cards">
             ${listaFiltrada.map(p => {
                 const semEstoque = p.estoque <= 0;
+                const ehFavorito = favoritos.includes(p.id);
+                const { media, total } = getResumoAvaliacoes(p.id);
+
                 return `
                     <div class="card ${semEstoque ? 'card-esgotado' : ''}">
-                        <img src="${p.imagem}" class="imagem_produto" alt="${p.nome}">
-                        <h3>${p.nome}</h3>
+                        <button class="btn-favorito ${ehFavorito ? 'ativo' : ''}" data-id="${p.id}" title="${ehFavorito ? 'Remover dos Favoritos' : 'Favoritar'}">
+                            ${ehFavorito ? '❤️' : '🤍'}
+                        </button>
+                        <img src="${p.imagem}" class="imagem_produto btn-detalhes" data-id="${p.id}" alt="${p.nome}" style="cursor: pointer;">
+                        <h3 class="btn-detalhes" data-id="${p.id}" style="cursor: pointer;">${p.nome}</h3>
+                        
+                        <div class="card-avaliacao-resumo" style="margin: 4px 0;">
+                            ${renderEstrelasHTML(media)}
+                            <small style="color: #a0a3c4;">(${total > 0 ? `${media} • ${total}` : 'Sem avaliações'})</small>
+                        </div>
+
                         ${renderPrecoHTML(p)}
                         <small style="margin: 0 15px 10px; color: #a0a3c4;">
                             ${semEstoque ? 'Sem estoque disponível' : `Estoque: ${p.estoque} un.`}
                         </small>
-                        <button class="btn-comprar" data-id="${p.id}" ${semEstoque ? 'disabled' : ''}>
-                            ${semEstoque ? 'Esgotado' : 'Comprar'}
-                        </button>
+
+                        <div style="display: flex; gap: 6px; margin: 0 15px;">
+                            <button class="btn-detalhes" data-id="${p.id}" style="flex: 1; background: #3f4265; color: #fff; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">👁️ Detalhes</button>
+                            <button class="btn-comprar" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="flex: 1.5;">
+                                ${semEstoque ? 'Esgotado' : 'Comprar'}
+                            </button>
+                        </div>
+                        
+                        <button class="btn-ver-avaliacoes" data-id="${p.id}" style="background: transparent; border: 1px solid #3f4265; color: #a0a3c4; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; width: 100%; font-size: 0.85rem;">💬 Avaliações</button>
+                        
+                        <div class="painel-avaliacoes" id="painel-aval-${p.id}" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a2d4a;">
+                            ${renderSecaoAvaliacoesHTML(p.id)}
+                        </div>
                     </div>
                 `;
             }).join('')}
         </div>
     `;
 
-    // Eventos de compra
+    // Eventos do Modal
+    container.querySelectorAll('.btn-detalhes').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = parseInt(e.currentTarget.getAttribute('data-id'));
+            estado.produtoModalId = id;
+            render();
+        });
+    });
+
+    // Evento de Busca
+    const inputBusca = container.querySelector('#inputBuscaProdutos');
+    if (inputBusca) {
+        inputBusca.addEventListener('input', (e) => {
+            estado.termoBusca = e.target.value;
+            render();
+            const inputAtualizado = document.querySelector('#inputBuscaProdutos');
+            if (inputAtualizado) {
+                inputAtualizado.focus();
+                inputAtualizado.setSelectionRange(inputAtualizado.value.length, inputAtualizado.value.length);
+            }
+        });
+    }
+
+    const btnLimpar = container.querySelector('#btnLimparBusca');
+    if (btnLimpar) {
+        btnLimpar.addEventListener('click', () => {
+            estado.termoBusca = '';
+            render();
+        });
+    }
+
+    // Eventos de Favoritar
+    container.querySelectorAll('.btn-favorito').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = parseInt(e.currentTarget.getAttribute('data-id'));
+            toggleFavorito(id);
+        });
+    });
+
+    // Eventos de Compra
     container.querySelectorAll('.btn-comprar').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = parseInt(e.target.getAttribute('data-id'));
@@ -268,7 +594,31 @@ function renderHome(container) {
             prod.estoque -= 1;
             salvarCarrinho(carrinho);
             alert(`${prod.nome} foi adicionado ao carrinho!`);
+            
+            estado.produtoModalId = null;
             render();
+        });
+    });
+
+    // Eventos de Avaliação
+    container.querySelectorAll('.btn-ver-avaliacoes').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = e.target.getAttribute('data-id');
+            const painel = container.querySelector(`#painel-aval-${id}`);
+            if (painel) {
+                painel.style.display = painel.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+    });
+
+    container.querySelectorAll('.form-avaliacao').forEach(form => {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = parseInt(form.getAttribute('data-id'));
+            const nota = form.nota.value;
+            const comentario = form.comentario.value;
+
+            adicionarAvaliacao(id, nota, comentario);
         });
     });
 }
@@ -379,7 +729,6 @@ function renderCarrinho(container) {
         </div>
     `;
 
-    // Botões do Carrinho
     container.querySelectorAll('.qtd-mais').forEach(b => b.addEventListener('click', (e) => {
         const id = parseInt(e.target.dataset.id);
         const prod = produtos.find(p => p.id === id);
@@ -611,25 +960,27 @@ function renderConfiguracoes(container) {
 }
 
 // ==========================================
-// 8. INICIALIZAÇÃO DA APLICAÇÃO
+// 10. INICIALIZAÇÃO DA APLICAÇÃO
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Aplica o tema e atualiza a UI com dados salvos
     aplicarTema(getConfiguracoes().tema);
     atualizarUIHeader();
 
-    // 2. Eventos nos botões do topo/header
     const btnLogo = document.getElementById('logoLink');
     const btnCarrinho = document.getElementById('btnIrCarrinho');
     const btnCadastro = document.getElementById('btnIrCadastro');
     const btnConfig = document.getElementById('btnIrConfig');
 
-    if (btnLogo) btnLogo.addEventListener('click', (e) => { e.preventDefault(); navegaPara('home'); });
+    if (btnLogo) btnLogo.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        estado.termoBusca = ''; 
+        estado.produtoModalId = null;
+        navegaPara('home'); 
+    });
     if (btnCarrinho) btnCarrinho.addEventListener('click', () => navegaPara('carrinho'));
     if (btnCadastro) btnCadastro.addEventListener('click', () => navegaPara('cadastro'));
     if (btnConfig) btnConfig.addEventListener('click', () => navegaPara('configuracoes'));
 
-    // 3. Controle da Sidebar / Menu Hambúrguer
     const menuToggle = document.getElementById('menuToggle');
     const menuClose = document.getElementById('menuClose');
     const sidebar = document.getElementById('sidebar');
@@ -648,16 +999,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuClose) menuClose.addEventListener('click', fecharMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', fecharMenu);
 
-    // 4. Filtros de Categorias
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             estado.categoriaFiltro = link.getAttribute('data-categoria');
+            estado.termoBusca = '';
+            estado.produtoModalId = null;
             fecharMenu();
             navegaPara('home');
         });
     });
 
-    // 5. Busca produtos no produtos.json e inicia o render
     carregarProdutos();
 });
