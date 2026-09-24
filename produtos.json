@@ -300,10 +300,11 @@
     "id": 33,
     "nome": "Street Fighter 6",
     "preco": 249.0,
+    "precoOriginal": 349.0,
     "imagem": "imagens/streetfighter6.webp",
     "categoria": "games",
     "estoque": 5,
-    "destaque": false
+    "destaque": true
   },
   {
     "id": 34,
@@ -513,7 +514,7 @@
     "imagem": "imagens/poke_fita.png",
     "categoria": "colecionaveis",
     "estoque": 5,
-    "destaque": false
+    "destaque": true
   },
   {
     "id": 57,
@@ -531,7 +532,7 @@
     "imagem": "imagens/beastars.jfif",
     "categoria": "mangas",
     "estoque": 5,
-    "destaque": false
+    "destaque": true
   }
 
 ]

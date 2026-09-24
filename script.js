@@ -49,8 +49,8 @@ function getIconeConfigHTML(tipo = 'circulo') {
 // DICIONÁRIOS E MAPEAMENTOS
 // ==========================================
 const logosCategorias = {
-    'todos': 'imagens/Logo.png',
-    'favoritos': 'imagens/Logo.png',
+    'todos': 'imagens/logo-descontos-e-promos.png',
+    'promocoes': 'imagens/logo-inicio.png',
     'canecas': 'imagens/logo-canecas.png',
     'ac': 'imagens/logo-ac.png',
     'quadros': 'imagens/logo-quadros.png',
@@ -59,10 +59,12 @@ const logosCategorias = {
     'hq': 'imagens/logo-quadrinhos.png',
     'games': 'imagens/logo-games.png',
     'colecionaveis': 'imagens/logo-colecionaveis.png',
-    'roupas': 'imagens/logo-roupas.png'
+    'roupas': 'imagens/logo-roupas.png',
+    'favoritos': 'imagens/logo-fav-chad.png'
 };
 
 const nomesCategorias = {
+    'promocoes': 'Promoções & Descontos',
     'canecas': 'Caneca Geek',
     'ac': 'Action Figure',
     'roupas': 'Vestuário / Cosplay',
@@ -71,7 +73,8 @@ const nomesCategorias = {
     'ln': 'Light Novel',
     'hq': 'História em Quadrinhos',
     'games': 'Jogo / Video Game',
-    'colecionaveis': 'Item Colecionável'
+    'colecionaveis': 'Item Colecionável',
+    'favoritos': 'Favoritos'
 };
 
 function atualizarLogoHeader() {
@@ -529,11 +532,16 @@ function renderPrecoHTML(p) {
 // TELA PRINCIPAL / HOME
 function renderHome(container) {
     const favoritos = getFavoritos();
-    const produtosDestaque = produtos.filter(p => p.destaque);
     
     let listaFiltrada = produtos;
     if (estado.categoriaFiltro === 'favoritos') {
         listaFiltrada = produtos.filter(p => favoritos.includes(p.id));
+    } else if (estado.categoriaFiltro === 'promocoes') {
+        listaFiltrada = produtos.filter(p => 
+            p.categoria === 'promocoes' || 
+            p.destaque === true || 
+            (p.precoOriginal && p.precoOriginal > p.preco)
+        );
     } else if (estado.categoriaFiltro !== 'todos') {
         listaFiltrada = produtos.filter(p => p.categoria === estado.categoriaFiltro);
     }
@@ -543,54 +551,9 @@ function renderHome(container) {
         listaFiltrada = listaFiltrada.filter(p => p.nome.toLowerCase().includes(termo));
     }
 
-    const htmlDestaques = (estado.categoriaFiltro === 'todos' && !estado.termoBusca) ? `
-        <section class="destaques-section">
-            <h2 class="secao-titulo">🔥 Destaques da Semana</h2>
-            <div class="destaques-grid">
-                ${produtosDestaque.map(p => {
-                    const semEstoque = p.estoque <= 0;
-                    const ehFavorito = favoritos.includes(p.id);
-                    const { media, total } = getResumoAvaliacoes(p.id);
-
-                    return `
-                        <div class="card-destaque ${semEstoque ? 'card-esgotado' : ''}">
-                            <button class="btn-favorito ${ehFavorito ? 'ativo' : ''}" data-id="${p.id}" title="${ehFavorito ? 'Remover dos Favoritos' : 'Favoritar'}">
-                                ${ehFavorito ? '❤️' : '🤍'}
-                            </button>
-                            <span class="badge-destaque">EM ALTA</span>
-                            <img src="${p.imagem}" alt="${p.nome}" class="btn-detalhes" data-id="${p.id}" style="cursor: pointer;">
-                            <div class="destaque-info">
-                                <h3 class="btn-detalhes" data-id="${p.id}" style="cursor: pointer;">${p.nome}</h3>
-                                
-                                <div class="card-avaliacao-resumo" style="margin: 4px 0;">
-                                    ${renderEstrelasHTML(media)}
-                                    <small style="color: #a0a3c4;">(${total > 0 ? `${media} • ${total}` : 'Sem avaliações'})</small>
-                                </div>
-
-                                ${renderPrecoHTML(p)}
-                                
-                                <div style="display: flex; gap: 6px; margin-top: 10px;">
-                                    <button class="btn-detalhes" data-id="${p.id}" style="flex: 1; background: #3f4265; color: #fff; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">👁️ Detalhes</button>
-                                    <button class="btn-comprar" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="flex: 1.5;">
-                                        ${semEstoque ? 'Esgotado' : '⚡ Comprar'}
-                                    </button>
-                                </div>
-
-                                <button class="btn-ver-avaliacoes" data-id="${p.id}" style="background: transparent; border: 1px solid #3f4265; color: #a0a3c4; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; width: 100%; font-size: 0.85rem;">💬 Avaliações</button>
-                                
-                                <div class="painel-avaliacoes" id="painel-aval-${p.id}" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a2d4a;">
-                                    ${renderSecaoAvaliacoesHTML(p.id)}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        </section>
-        <h2 class="secao-titulo">🛒 Todos os Produtos</h2>
-    ` : '';
-
-    const tituloSecao = estado.categoriaFiltro === 'favoritos' ? '❤️ Meus Favoritos' : '🛒 Produtos';
+    const tituloSecao = estado.categoriaFiltro === 'favoritos' 
+        ? '❤️ Meus Favoritos' 
+        : (estado.categoriaFiltro === 'promocoes' ? '🔥 Promoções & Descontos' : '🛒 Todos os Produtos');
 
     const htmlBarraBusca = `
         <div class="busca-wrapper" style="max-width: 600px; margin: 0 auto 25px auto; padding: 0 15px;">
@@ -611,8 +574,7 @@ function renderHome(container) {
 
     container.innerHTML = `
         ${htmlBarraBusca}
-        ${htmlDestaques}
-        ${(estado.categoriaFiltro !== 'todos' || estado.termoBusca) ? `<h2 class="secao-titulo">${tituloSecao} ${estado.termoBusca ? `(Resultados para "${estado.termoBusca}")` : ''}</h2>` : ''}
+        <h2 class="secao-titulo">${tituloSecao} ${estado.termoBusca ? `(Resultados para "${estado.termoBusca}")` : ''}</h2>
         ${listaFiltrada.length === 0 ? `<p style="text-align: center; padding: 40px; color: #a0a3c4;">Nenhum produto encontrado.</p>` : ''}
         <div class="cards">
             ${listaFiltrada.map(p => {
@@ -656,6 +618,7 @@ function renderHome(container) {
         </div>
     `;
 
+    // Listeners de eventos
     container.querySelectorAll('.btn-detalhes').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = parseInt(e.currentTarget.getAttribute('data-id'));
@@ -1423,27 +1386,35 @@ function renderConfiguracoes(container) {
 }
 
 // ==========================================
-// 10. INICIALIZAÇÃO DA APLICAÇÃO
+// 10. INICIALIZAÇÃO DA APLICAÇÃO E EVENTOS GLOBAIS
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Aplica tema e atualiza a interface inicial
     aplicarTema(getConfiguracoes().tema);
     atualizarUIHeader();
 
+    // 2. Elementos do Cabeçalho (Header)
     const btnLogo = document.getElementById('logoLink');
     const btnCarrinho = document.getElementById('btnIrCarrinho');
     const btnCadastro = document.getElementById('btnIrCadastro');
     const btnConfig = document.getElementById('btnIrConfig');
 
-    if (btnLogo) btnLogo.addEventListener('click', (e) => { 
-        e.preventDefault(); 
-        estado.termoBusca = ''; 
-        estado.produtoModalId = null;
-        navegaPara('home'); 
-    });
+    if (btnLogo) {
+        btnLogo.addEventListener('click', (e) => { 
+            e.preventDefault(); 
+            estado.categoriaFiltro = 'todos';
+            estado.termoBusca = ''; 
+            estado.produtoModalId = null;
+            navegaPara('home'); 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
     if (btnCarrinho) btnCarrinho.addEventListener('click', () => navegaPara('carrinho'));
     if (btnCadastro) btnCadastro.addEventListener('click', () => navegaPara('cadastro'));
     if (btnConfig) btnConfig.addEventListener('click', () => navegaPara('configuracoes'));
 
+    // 3. Controle do Menu Lateral (Sidebar & Hambúrguer)
     const menuToggle = document.getElementById('menuToggle');
     const menuClose = document.getElementById('menuClose');
     const sidebar = document.getElementById('sidebar');
@@ -1454,24 +1425,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (menuOverlay) menuOverlay.classList.remove('active');
     };
 
-    if (menuToggle) menuToggle.addEventListener('click', () => {
-        if (sidebar) sidebar.classList.add('active');
-        if (menuOverlay) menuOverlay.classList.add('active');
-    });
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            if (sidebar) sidebar.classList.add('active');
+            if (menuOverlay) menuOverlay.classList.add('active');
+        });
+    }
 
     if (menuClose) menuClose.addEventListener('click', fecharMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', fecharMenu);
 
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', (e) => {
+    // 4. Delegação de eventos para links de categoria (atende Sidebar e Rodapé)
+    document.addEventListener('click', (e) => {
+        const linkCategoria = e.target.closest('.nav-link[data-categoria]');
+        if (linkCategoria) {
             e.preventDefault();
-            estado.categoriaFiltro = link.getAttribute('data-categoria');
+            const categoria = linkCategoria.getAttribute('data-categoria');
+            
+            estado.categoriaFiltro = categoria;
             estado.termoBusca = '';
             estado.produtoModalId = null;
+            
             fecharMenu();
             navegaPara('home');
-        });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     });
 
+    // 5. Carregamento dos dados dos produtos
     carregarProdutos();
 });
