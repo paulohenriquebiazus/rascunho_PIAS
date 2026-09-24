@@ -435,7 +435,7 @@ function aplicarTema(tema) {
 }
 
 // ==========================================
-// 8. ROTEADOR E NAVEGAÇÃO
+// ROTEADOR E NAVEGAÇÃO
 // ==========================================
 function navegaPara(tela) {
     estado.telaAtual = tela;
@@ -443,72 +443,97 @@ function navegaPara(tela) {
 }
 
 function render() {
-    const main = document.getElementById('app');
-    if (!main) return;
-
-    atualizarBadge();
+    const container = document.getElementById('app');
+    if (!container) {
+        console.error("Erro: O elemento <div id='app'></div> não foi encontrado no seu HTML!");
+        return;
+    }
 
     if (estado.telaAtual === 'home') {
-        renderHome(main);
+        renderHome(container);
     } else if (estado.telaAtual === 'carrinho') {
-        renderCarrinho(main);
+        renderCarrinho(container);
     } else if (estado.telaAtual === 'cadastro') {
-        renderCadastro(main);
+        renderCadastro(container);
     } else if (estado.telaAtual === 'configuracoes') {
-        renderConfiguracoes(main);
+        renderConfiguracoes(container);
+    } else if (estado.telaAtual === 'sobre') {
+        renderSobre(container);
     }
 
-    const modalHTML = renderModalDetalhesHTML();
-    if (modalHTML) {
-        main.insertAdjacentHTML('beforeend', modalHTML);
-        
-        const btnFechar = document.getElementById('btnFecharModal');
-        const overlay = document.getElementById('modalDetalhesOverlay');
-        const btnComprarModal = document.querySelector('.btn-comprar-modal');
-
-        if (btnComprarModal) {
-            btnComprarModal.addEventListener('click', (e) => {
-                const id = parseInt(e.currentTarget.getAttribute('data-id'));
-                const prod = produtos.find(p => p.id === id);
-                
-                if (!prod || prod.estoque <= 0) return;
-
-                let carrinho = getCarrinho();
-                const itemExistente = carrinho.find(i => i.id === id);
-
-                if (itemExistente) {
-                    itemExistente.qtd += 1;
-                } else {
-                    carrinho.push({ ...prod, qtd: 1 });
-                }
-
-                prod.estoque -= 1;
-                salvarCarrinho(carrinho);
-                alert(`${prod.nome} foi adicionado ao carrinho!`);
-                
-                estado.produtoModalId = null;
-                render();
-            });
-        }
-
-        if (btnFechar) {
-            btnFechar.addEventListener('click', () => {
-                estado.produtoModalId = null;
-                render();
-            });
-        }
-
-        if (overlay) {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    estado.produtoModalId = null;
-                    render();
-                }
-            });
-        }
+    if (estado.produtoModalId !== null && typeof renderModalDetalhes === 'function') {
+        renderModalDetalhes(container);
     }
+}
 
-    atualizarLogoHeader();
+// ==========================================
+// TELA SOBRE O SITE / INSTITUCIONAL
+// ==========================================
+function renderSobre(container) {
+    container.innerHTML = `
+        <div class="sobre-wrapper" style="max-width: 900px; margin: 30px auto; padding: 0 15px;">
+            <div class="sobre-box" style="background: #1e2038; padding: 40px; border-radius: 12px; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+                
+                <div style="text-align: center; margin-bottom: 35px; border-bottom: 1px solid #3f4265; padding-bottom: 30px;">
+                    <h1 style="font-size: 2.4rem; margin: 0 0 10px 0; color: #fff; font-weight: 800;">
+                        Collector's Hub <span style="color: #6c5ce7;">⚡</span>
+                    </h1>
+                    <p style="color: #a0a3c4; font-size: 1.15rem; margin: 0; font-weight: 500;">
+                        De fãs para fãs: o ponto de encontro definitivo do universo geek, gamer e otaku.
+                    </p>
+                </div>
+
+                <div style="background: #141526; padding: 28px; border-radius: 10px; border: 1px solid #2a2d4a; margin-bottom: 30px;">
+                    <h2 style="color: #6c5ce7; margin-top: 0; margin-bottom: 15px; font-size: 1.3rem; display: flex; align-items: center; gap: 8px;">
+                        <span>💜</span> Nossa História
+                    </h2>
+                    <p style="color: #d1d5db; line-height: 1.7; font-size: 1rem; margin: 0 0 15px 0;">
+                        O <strong>Collector's Hub</strong> nasceu de uma paixão inegociável pelo universo geek, gamer, otaku e pela cultura pop. Não somos apenas um e-commerce; somos o ponto de encontro definitivo construído por fãs e para fãs que entendem o peso emocional de cada item na prateleira.
+                    </p>
+                    <p style="color: #d1d5db; line-height: 1.7; font-size: 1rem; margin: 0;">
+                        Se você busca aquele <strong>Action Figure</strong> com acabamento impecável, a edição física do seu <strong>mangá</strong> favorito, <strong>Light Novels</strong>, <strong>HQs</strong>, <strong>games</strong>, <strong>canecas temáticas</strong> ou peças de <strong>vestuário e cosplay</strong>, este é o seu santuário.
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 35px;">
+                    <div style="background: #141526; padding: 22px; border-radius: 10px; border: 1px solid #2a2d4a;">
+                        <h3 style="color: #00e676; margin-top: 0; margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                            <span>🛡️</span> Cuidado de Colecionador
+                        </h3>
+                        <p style="color: #a0a3c4; line-height: 1.6; font-size: 0.92rem; margin: 0;">
+                            Sabemos que a experiência vai muito além da compra. Nossos produtos são rigorosamente selecionados e embalados com proteção reforçada para garantir que a caixa e o colecionável cheguem impecáveis.
+                        </p>
+                    </div>
+
+                    <div style="background: #141526; padding: 22px; border-radius: 10px; border: 1px solid #2a2d4a;">
+                        <h3 style="color: #6c5ce7; margin-top: 0; margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                            <span>🚀</span> Tecnologia & Transparência
+                        </h3>
+                        <p style="color: #a0a3c4; line-height: 1.6; font-size: 0.92rem; margin: 0;">
+                            Oferecemos uma plataforma intuitiva equipada com rastreamento em tempo real, programa de Membros VIP, benefícios de frete grátis e espaço para avaliações transparentes da comunidade.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; background: linear-gradient(135deg, #1e2038 0%, #2a2d4a 100%); padding: 30px; border-radius: 10px; border: 1px solid #3f4265;">
+                    <p style="font-size: 1.1rem; color: #fff; margin: 0 0 20px 0; font-weight: 600;">
+                        Do primeiro item da sua estante até a coleção de nível mestre, estamos aqui para elevar o seu hobby.
+                    </p>
+                    <button id="btnVoltarLojaSobre" style="background: #6c5ce7; color: white; border: none; padding: 14px 32px; border-radius: 8px; font-weight: bold; font-size: 1.05rem; cursor: pointer;">
+                        🛍️ Começar a Colecionar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    `;
+
+    document.getElementById('btnVoltarLojaSobre').addEventListener('click', () => {
+        estado.categoriaFiltro = 'todos';
+        estado.termoBusca = '';
+        navegaPara('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 }
 
 // ==========================================
@@ -1386,10 +1411,97 @@ function renderConfiguracoes(container) {
 }
 
 // ==========================================
+// TELA SOBRE O SITE / INSTITUCIONAL (ATUALIZADA)
+// ==========================================
+function renderSobre(container) {
+    container.innerHTML = `
+        <div class="sobre-wrapper" style="max-width: 900px; margin: 30px auto; padding: 0 15px;">
+            <div class="sobre-box" style="background: #1e2038; padding: 40px; border-radius: 12px; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+                
+                <!-- HERO / CABEÇALHO -->
+                <div style="text-align: center; margin-bottom: 35px; border-bottom: 1px solid #3f4265; padding-bottom: 30px;">
+                    <h1 style="font-size: 2.4rem; margin: 0 0 10px 0; color: #fff; font-weight: 800;">
+                        Collector's Hub <span style="color: #6c5ce7;">⚡</span>
+                    </h1>
+                    <p style="color: #a0a3c4; font-size: 1.15rem; margin: 0; font-weight: 500;">
+                        De fãs para fãs: o ponto de encontro definitivo do universo geek, gamer e otaku.
+                    </p>
+                </div>
+
+                <!-- HISTÓRIA E MANIFESTO -->
+                <div style="background: #141526; padding: 28px; border-radius: 10px; border: 1px solid #2a2d4a; margin-bottom: 30px;">
+                    <h2 style="color: #6c5ce7; margin-top: 0; margin-bottom: 15px; font-size: 1.3rem; display: flex; align-items: center; gap: 8px;">
+                        <span>💜</span> Nossa História
+                    </h2>
+                    <p style="color: #d1d5db; line-height: 1.7; font-size: 1rem; margin: 0 0 15px 0;">
+                        O <strong>Collector's Hub</strong> nasceu de uma paixão inegociável pelo universo geek, gamer, otaku e pela cultura pop. Não somos apenas um e-commerce; somos o ponto de encontro definitivo construído por fãs e para fãs que entendem o peso emocional de cada item na prateleira.
+                    </p>
+                    <p style="color: #d1d5db; line-height: 1.7; font-size: 1rem; margin: 0;">
+                        Se você busca aquele <strong>Action Figure</strong> com acabamento impecável, a edição física do seu <strong>mangá</strong> favorito, <strong>Light Novels</strong>, <strong>HQs</strong>, <strong>games</strong>, <strong>canecas temáticas</strong> ou peças de <strong>vestuário e cosplay</strong>, este é o seu santuário.
+                    </p>
+                </div>
+
+                <!-- PILARES E COMPROMISSO -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 35px;">
+                    <div style="background: #141526; padding: 22px; border-radius: 10px; border: 1px solid #2a2d4a;">
+                        <h3 style="color: #00e676; margin-top: 0; margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                            <span>🛡️</span> Cuidado de Colecionador
+                        </h3>
+                        <p style="color: #a0a3c4; line-height: 1.6; font-size: 0.92rem; margin: 0;">
+                            Sabemos que a experiência vai muito além da compra. Nossos produtos são rigorosamente selecionados e embalados com proteção reforçada para garantir que a caixa e o colecionável cheguem impecáveis.
+                        </p>
+                    </div>
+
+                    <div style="background: #141526; padding: 22px; border-radius: 10px; border: 1px solid #2a2d4a;">
+                        <h3 style="color: #6c5ce7; margin-top: 0; margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                            <span>🚀</span> Tecnologia & Transparência
+                        </h3>
+                        <p style="color: #a0a3c4; line-height: 1.6; font-size: 0.92rem; margin: 0;">
+                            Oferecemos uma plataforma intuitiva equipada com rastreamento em tempo real, programa de Membros VIP, benefícios de frete grátis e espaço para avaliações transparentes da comunidade.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- VITRINE DE CATEGORIAS -->
+                <div style="background: #141526; padding: 25px; border-radius: 10px; border: 1px solid #2a2d4a; margin-bottom: 35px; text-align: center;">
+                    <h3 style="color: #fff; margin-top: 0; margin-bottom: 15px; font-size: 1.1rem;">O que você encontra no Hub:</h3>
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <span style="background: #1e2038; border: 1px solid #3f4265; color: #d1d5db; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem;">🤖 Action Figures</span>
+                        <span style="background: #1e2038; border: 1px solid #3f4265; color: #d1d5db; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem;">📖 Mangás & Light Novels</span>
+                        <span style="background: #1e2038; border: 1px solid #3f4265; color: #d1d5db; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem;">📚 Histórias em Quadrinhos</span>
+                        <span style="background: #1e2038; border: 1px solid #3f4265; color: #d1d5db; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem;">🎮 Games & Acessórios</span>
+                        <span style="background: #1e2038; border: 1px solid #3f4265; color: #d1d5db; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem;">☕ Canecas Geek</span>
+                        <span style="background: #1e2038; border: 1px solid #3f4265; color: #d1d5db; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem;">👕 Vestuário & Cosplay</span>
+                    </div>
+                </div>
+
+                <!-- MENSAGEM FINAL & CTA -->
+                <div style="text-align: center; background: linear-gradient(135deg, #1e2038 0%, #2a2d4a 100%); padding: 30px; border-radius: 10px; border: 1px solid #3f4265;">
+                    <p style="font-size: 1.1rem; color: #fff; margin: 0 0 20px 0; font-weight: 600;">
+                        Do primeiro item da sua estante até a coleção de nível mestre, estamos aqui para elevar o seu hobby.
+                    </p>
+                    <button id="btnVoltarLojaSobre" style="background: #6c5ce7; color: white; border: none; padding: 14px 32px; border-radius: 8px; font-weight: bold; font-size: 1.05rem; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);">
+                        🛍️ Começar a Colecionar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    `;
+
+    document.getElementById('btnVoltarLojaSobre').addEventListener('click', () => {
+        estado.categoriaFiltro = 'todos';
+        estado.termoBusca = '';
+        navegaPara('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// ==========================================
 // 10. INICIALIZAÇÃO DA APLICAÇÃO E EVENTOS GLOBAIS
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Aplica tema e atualiza a interface inicial
+    // 1. Aplica o tema salvo e atualiza a UI do cabeçalho
     aplicarTema(getConfiguracoes().tema);
     atualizarUIHeader();
 
@@ -1435,8 +1547,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuClose) menuClose.addEventListener('click', fecharMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', fecharMenu);
 
-    // 4. Delegação de eventos para links de categoria (atende Sidebar e Rodapé)
+    // 4. Delegação Global para Categoria e Navegação (Sidebar, Header e Footer)
     document.addEventListener('click', (e) => {
+        // Clica em links de categoria
         const linkCategoria = e.target.closest('.nav-link[data-categoria]');
         if (linkCategoria) {
             e.preventDefault();
@@ -1449,9 +1562,20 @@ document.addEventListener('DOMContentLoaded', () => {
             fecharMenu();
             navegaPara('home');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        // Clica em links da página "Sobre Nós"
+        const linkSobre = e.target.closest('.nav-link-sobre');
+        if (linkSobre) {
+            e.preventDefault();
+            estado.produtoModalId = null;
+            fecharMenu();
+            navegaPara('sobre');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
 
-    // 5. Carregamento dos dados dos produtos
+    // 5. Carrega produtos e inicializa a loja
     carregarProdutos();
 });
