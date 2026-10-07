@@ -551,5 +551,32 @@
     "categoria": "ln",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 61,
+    "nome": "Stardew Valley",
+    "preco": 279.90,
+    "imagem": "imagens/Stardew-valley.jfif",
+    "categoria": "games",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 62,
+    "nome": "Pingente de Sereia do Stardew Valley",
+    "preco": 15.0,
+    "imagem": "imagens/pingentesereia.jfif",
+    "categoria": "colecionaveis",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 63,
+    "nome": "Fursuits traje completo",
+    "preco": 11973.99,
+    "imagem": "imagens/fursuit.jpg",
+    "categoria": "roupas",
+    "estoque": 5,
+    "destaque": false
   }
 ]
