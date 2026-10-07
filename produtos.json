@@ -533,6 +533,23 @@
     "categoria": "mangas",
     "estoque": 5,
     "destaque": true
+  },
+  {
+    "id": 59,
+    "nome": "Amor Invisível Sob o Céu Noturno Vol. 1",
+    "preco": 42.9,
+    "imagem": "imagens/AISCN.jfif",
+    "categoria": "ln",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 60,
+    "nome": "Date a Live Vol. 1",
+    "preco": 46.0,
+    "imagem": "imagens/DAL.jfif",
+    "categoria": "ln",
+    "estoque": 5,
+    "destaque": false
   }
-
 ]
