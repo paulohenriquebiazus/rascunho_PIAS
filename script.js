@@ -464,6 +464,8 @@ function render() {
     if (estado.produtoModalId !== null && typeof renderModalDetalhes === 'function') {
         renderModalDetalhes(container);
     }
+
+    atualizarLogoHeader(); // Atualiza a logo conforme a categoria selecionada
 }
 
 // ==========================================
