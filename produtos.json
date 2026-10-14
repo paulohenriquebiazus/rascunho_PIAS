@@ -658,5 +658,95 @@
     "categoria": "mangas",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 73,
+    "nome": "Caneca Jotaro vs Dio",
+    "preco": 45.00,
+    "imagem": "imagens/jxd.jfif",
+    "categoria": "canecas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 74,
+    "nome": "Caneca Game Boy",
+    "preco": 44.00,
+    "imagem": "imagens/GBC.jpg",
+    "categoria": "canecas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 75,
+    "nome": "Action Figure Spawn",
+    "preco": 750.00,
+    "imagem": "imagens/Spw.webp",
+    "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 76,
+    "nome": "Action Figure Demogorgon",
+    "preco": 43.00,
+    "imagem": "imagens/Demo.jpg",
+    "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 77,
+    "nome": "Zero no Tsukaima Vol 1",
+    "preco": 30.00,
+    "imagem": "imagens/ZT.jfif",
+    "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 78,
+    "nome": "Aprenda a Desenhar Mangá",
+    "preco": 40.00,
+    "imagem": "imagens/aadm.jfif",
+    "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 79,
+    "nome": "Toon Vol 1",
+    "preco": 40.00,
+    "imagem": "imagens/Toon.jfif",
+    "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 80,
+    "nome": "Nagatoro Vol 1",
+    "preco": 45.00,
+    "imagem": "imagens/nmcn.jfif",
+    "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 81,
+    "nome": "Medaka Box Vol 1",
+    "preco": 40.00,
+    "imagem": "imagens/mb.jfif",
+    "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 82,
+    "nome": "Madoka Magica Vol 1",
+    "preco": 60.00,
+    "imagem": "imagens/mm.jfif",
+    "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
   }
 ]
