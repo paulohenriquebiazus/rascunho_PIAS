@@ -578,5 +578,85 @@
     "categoria": "roupas",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 64,
+    "nome": "Miku Cosplay",
+    "preco": 732.90,
+    "imagem": "imagens/miku.jfif",
+    "categoria": "roupas",
+    "destaque": false
+  },
+  {
+    "id": 65,
+    "nome": "ChainSmoker Cat",
+    "preco": 50.15,
+    "imagem": "imagens/gatafumante.jfif",
+    "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 66,
+    "nome": "Hellboy Omnibus Vol. 1: Seed of Destruction",
+    "preco": 189.90,
+    "imagem": "imagens/hellboy.jfif",
+    "categoria": "hq",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 67,
+    "nome": "Marvel Guerra Civil Vol. 1",
+    "preco": 142.50,
+    "imagem": "imagens/guerracivil.jfif",
+    "categoria": "hq",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 68,
+    "nome": "Deadpool Vol. 1",
+    "preco": 14.90,
+    "imagem": "imagens/deadpool.webp",
+    "categoria": "hq",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 69,
+    "nome": "Avatar: The High Ground Vol. 1",
+    "preco": 87.90,
+    "imagem": "imagens/avatar.jfif",
+    "categoria": "hq",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 70,
+    "nome": "Godzilla in Hell Vol. 1",
+    "preco": 59.75,
+    "imagem": "imagens/GIH.jpg",
+    "categoria": "hq",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 71,
+    "nome": "One Piece Vol. 1",
+    "preco": 37.00,
+    "imagem": "imagens/onepiece.jfif",
+    "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 72,
+    "nome": "Sense Life Vol. 1",
+    "preco": 41.50,
+    "imagem": "imagens/senselife.jfif",
+    "categoria": "mangas",
+    "estoque": 5,
+    "destaque": false
   }
 ]
