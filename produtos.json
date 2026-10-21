@@ -795,6 +795,24 @@
     "destaque": false
   },
   {
+    "id": 88,
+    "nome": "Figura de Ação Nezuko Kamado",
+    "preco": 890.00,
+    "imagem": "imagem/nk.webp",
+    "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 89,
+    "nome": "Figura de Ação Gogeta Super Saiyajin 4",
+    "preco": 400.00,
+    "imagem": "imagem/gssj4.jfif",
+    "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
     "id": 90,
     "nome": "Actiion Figure Satoru Gojo",
     "preco": 285.60,
