@@ -793,5 +793,23 @@
     "categoria": "ac",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 90,
+    "nome": "Actiion Figure Satoru Gojo",
+    "preco": 285.60,
+    "imagem": "imagem/gojo.webp",
+    "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 91,
+    "nome": "Action Figure Kratos e Atreus - God Of War",
+    "preco": 299.90,
+    "imagem": "imagem/bomdegurra.webp",
+    "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
   }
 ]
