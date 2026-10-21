@@ -748,5 +748,23 @@
     "categoria": "mangas",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 83,
+    "nome": "Caneca de Porcelana Personalizada Cubo Mágico",
+    "preco": 35.99,
+    "imagem": "imagem/canecubo.jfif",
+    "categoria": "canecas",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 84,
+    "nome": "Caneca I Love My Nerd",
+    "preco": 44.90,
+    "imagem": "imagem/canecamynerd.jpg",
+    "categoria": "canecas",
+    "estoque": 5,
+    "destaque": false
   }
 ]
