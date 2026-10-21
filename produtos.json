@@ -766,5 +766,32 @@
     "categoria": "canecas",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 85,
+    "nome": "Figura de Ação Eva 01",
+    "preco": 350.00,
+    "imagem": "imagem/ev01.jfif",
+    "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 86,
+    "nome": "Figura de Ação Sanji",
+    "preco": 85.00,
+    "imagem": "imagem/vs.webp",
+    "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 87,
+    "nome": "Figura de Ação Zorão Sem Camisa",
+    "preco": 45.00,
+    "imagem": "imagem/rz.jpg",
+    "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
   }
 ]
