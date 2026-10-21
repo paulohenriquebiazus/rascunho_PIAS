@@ -901,5 +901,14 @@
     "categoria": "ln",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 100,
+    "nome": "God of War 2018",
+    "preco": 120.00,
+    "imagem": "imagem/gow4.webp",
+    "categoria": "games",
+    "estoque": 5,
+    "destaque": false
   }
 ]
