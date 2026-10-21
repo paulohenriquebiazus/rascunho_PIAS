@@ -865,5 +865,41 @@
     "categoria": "quadros",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 96,
+    "nome": "Classroom of the Elite - Vol. 1",
+    "preco": 39.90,
+    "imagem": "imagem/cote.jpg",
+    "categoria": "ln",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 97,
+    "nome": "No Game, No Life - Vol. 1",
+    "preco": 746.70,
+    "imagem": "imagem/ngnf.jpg",
+    "categoria": "ln",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 98,
+    "nome": "Mushoku Tensei: Jobless Reicarnation - Vol. 1",
+    "preco": 74.71,
+    "imagem": "imagem/MTJR.jpg",
+    "categoria": "ln",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 99,
+    "nome": "Berserk Of Gluttony - Vol. 1",
+    "preco": 71.05,
+    "imagem": "imagem/bog.webp",
+    "categoria": "ln",
+    "estoque": 5,
+    "destaque": false
   }
 ]
