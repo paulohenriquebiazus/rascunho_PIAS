@@ -749,7 +749,7 @@
     "estoque": 5,
     "destaque": false
   },
-  {
+{
     "id": 83,
     "nome": "Caneca de Porcelana Personalizada Cubo Mágico",
     "preco": 35.99,
@@ -827,6 +827,42 @@
     "preco": 299.90,
     "imagem": "imagem/bomdegurra.webp",
     "categoria": "ac",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 92,
+    "nome": "Quadro Pantera Cor de Rosa",
+    "preco": 180.90,
+    "imagem": "imagem/pcdr.webp",
+    "categoria": "quadros",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 93,
+    "nome": "Quadro Homer Simpson",
+    "preco": 60.00,
+    "imagem": "imagem/qrs.jpg",
+    "categoria": "quadros",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 94,
+    "nome": "Quadros Star Wars",
+    "preco": 299.90,
+    "imagem": "imagem/sw.jfif",
+    "categoria": "quadros",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 95,
+    "nome": "Quadros Irmãos Mario",
+    "preco": 299.90,
+    "imagem": "imagem/im.jfif",
+    "categoria": "quadros",
     "estoque": 5,
     "destaque": false
   }
