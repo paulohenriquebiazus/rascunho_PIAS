@@ -919,5 +919,23 @@
     "categoria": "games",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 102,
+    "nome": "Spore Mídia Física",
+    "preco": 60.00,
+    "imagem": "imagem/spore.jfif",
+    "categoria": "games",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 103,
+    "nome": "Tekken 8",
+    "preco": 120.00,
+    "imagem": "imagem/tk8.jpg",
+    "categoria": "games",
+    "estoque": 5,
+    "destaque": false
   }
 ]
