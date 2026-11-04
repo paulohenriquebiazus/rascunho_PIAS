@@ -910,5 +910,14 @@
     "categoria": "games",
     "estoque": 5,
     "destaque": false
+  },
+  {
+    "id": 101,
+    "nome": "Metroid Prime 4: Beyond",
+    "preco": 120.00,
+    "imagem": "imagem/mp4.jfif",
+    "categoria": "games",
+    "estoque": 5,
+    "destaque": false
   }
 ]
