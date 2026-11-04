@@ -346,7 +346,7 @@ function renderSecaoAvaliacoesHTML(produtoId) {
 }
 
 // ==========================================
-// 6. MODAL DE DETALHES DO PRODUTO
+// 6. MODAL DE DETALHES DO PRODUTO (ESTILO MERCADO LIVRE)
 // ==========================================
 function renderModalDetalhesHTML() {
     if (!estado.produtoModalId) return '';
@@ -360,48 +360,121 @@ function renderModalDetalhesHTML() {
 
     const descricao = p.descricao || `Produto oficial e de alta qualidade: <strong>${p.nome}</strong>. Ideal para fãs, colecionadores e amantes do universo geek e pop culture. Adicione à sua coleção hoje mesmo!`;
 
+    const valorParcela12x = (p.preco / 12).toFixed(2).replace('.', ',');
+
     return `
-        <div id="modalDetalhesOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
-            <div style="background: #1e2038; border-radius: 12px; max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 25px; position: relative; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+        <div id="modalDetalhesOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box;">
+            <div style="background: #1e2038; border-radius: 8px; max-width: 920px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 25px; position: relative; color: #fff; border: 1px solid #3f4265; box-shadow: 0 12px 35px rgba(0,0,0,0.7);">
                 
-                <button id="btnFecharModal" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #a0a3c4; font-size: 1.5rem; cursor: pointer;">✖</button>
+                <!-- BOTÃO FECHAR -->
+                <button id="btnFecharModal" style="position: absolute; top: 15px; right: 15px; background: #141526; border: 1px solid #3f4265; color: #a0a3c4; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.2s;">✖</button>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 10px;">
-                    <div style="display: flex; align-items: center; justify-content: center;">
-                        <img src="${p.imagem}" alt="${p.nome}" style="width: 100%; max-height: 300px; border-radius: 8px; object-fit: contain; background: #141526; padding: 10px; box-sizing: border-box;">
-                    </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 25px; margin-top: 10px;">
+                    
+                    <!-- COLUNA ESQUERDA: IMAGEM E DESCRIÇÃO -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div style="background: #141526; border: 1px solid #2a2d4a; border-radius: 8px; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 330px;">
+                            <img src="${p.imagem}" alt="${p.nome}" style="max-width: 100%; max-height: 340px; object-fit: contain;">
+                        </div>
 
-                    <div style="display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>
-                            <span style="font-size: 0.75rem; background: #6c5ce7; color: #fff; padding: 4px 10px; border-radius: 12px; font-weight: bold; text-transform: uppercase;">${nomeCategoria}</span>
-                            <h2 style="margin: 12px 0 6px 0; font-size: 1.4rem; color: #fff;">${p.nome}</h2>
-                            
-                            <div style="margin-bottom: 12px;">
-                                ${renderEstrelasHTML(media)}
-                                <small style="color: #a0a3c4;">(${total > 0 ? `${media} de 5 (${total} avaliações)` : 'Sem avaliações ainda'})</small>
-                            </div>
-
-                            ${renderPrecoHTML(p)}
-
-                            <p style="font-size: 0.9rem; color: #c0c3e0; margin: 15px 0; line-height: 1.5;">
+                        <div style="background: #141526; border: 1px solid #2a2d4a; border-radius: 8px; padding: 20px;">
+                            <h3 style="margin: 0 0 12px 0; font-size: 1.05rem; color: #fff; border-bottom: 1px solid #2a2d4a; padding-bottom: 8px;">Descrição do Produto</h3>
+                            <p style="font-size: 0.9rem; color: #a0a3c4; line-height: 1.6; margin: 0;">
                                 ${descricao}
                             </p>
+                        </div>
+                    </div>
 
-                            <div style="background: #141526; padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 15px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                    <span style="color: #a0a3c4;">Código (ID):</span>
-                                    <strong style="color: #fff;">#${p.id}</strong>
+                    <!-- COLUNA DIREITA: PAINEL DE COMPRA (ESTILO MERCADO LIVRE) -->
+                    <div style="background: #141526; border: 1px solid #2a2d4a; border-radius: 8px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <!-- CONDICAO E CATEGORIA -->
+                            <div style="font-size: 0.8rem; color: #a0a3c4; margin-bottom: 6px;">
+                                Novo &nbsp;|&nbsp; +100 vendidos &nbsp;•&nbsp; <span style="color: #6c5ce7; font-weight: bold;">${nomeCategoria}</span>
+                            </div>
+
+                            <!-- TÍTULO DO PRODUTO -->
+                            <h1 style="font-size: 1.35rem; color: #fff; margin: 0 0 10px 0; line-height: 1.3; font-weight: 700;">
+                                ${p.nome}
+                            </h1>
+
+                            <!-- AVALIAÇÕES -->
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 18px; font-size: 0.85rem;">
+                                ${renderEstrelasHTML(media)}
+                                <span style="color: #3483fa; font-weight: 600;">${media}</span>
+                                <span style="color: #a0a3c4;">(${total} opiniões)</span>
+                            </div>
+
+                            <!-- PREÇOS E PARCELAMENTO -->
+                            <div style="margin-bottom: 20px;">
+                                ${p.precoOriginal && p.precoOriginal > p.preco ? `
+                                    <span style="text-decoration: line-through; color: #8c8fae; font-size: 0.95rem; display: block; margin-bottom: 2px;">
+                                        R$ ${p.precoOriginal.toFixed(2).replace('.', ',')}
+                                    </span>
+                                ` : ''}
+                                
+                                <div style="display: flex; align-items: baseline; gap: 10px;">
+                                    <span style="font-size: 2.2rem; font-weight: 300; color: #fff; line-height: 1;">
+                                        R$ ${p.preco.toFixed(2).replace('.', ',')}
+                                    </span>
+                                    ${p.precoOriginal && p.precoOriginal > p.preco ? `
+                                        <span style="color: #00a650; font-size: 1.1rem; font-weight: 600;">
+                                            ${Math.round(((p.precoOriginal - p.preco) / p.precoOriginal) * 100)}% OFF
+                                        </span>
+                                    ` : ''}
                                 </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: #a0a3c4;">Disponibilidade:</span>
-                                    <strong style="color: ${semEstoque ? '#ff5252' : '#00e676'};">${semEstoque ? 'Esgotado' : `${p.estoque} unidades`}</strong>
+
+                                <div style="font-size: 0.95rem; color: #00a650; margin-top: 6px; font-weight: 500;">
+                                    em 12x R$ ${valorParcela12x} sem juros
+                                </div>
+                            </div>
+
+                            <!-- BANNER DE FRETE GRÁTIS -->
+                            <div style="margin-bottom: 20px; font-size: 0.9rem; background: rgba(0, 166, 80, 0.1); padding: 12px; border-radius: 6px; border: 1px solid rgba(0, 166, 80, 0.25);">
+                                <div style="color: #00a650; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                    <span>🚚</span> Frete grátis para todo o Brasil
+                                </div>
+                                <div style="color: #a0a3c4; font-size: 0.8rem; margin-top: 3px; padding-left: 26px;">
+                                    Chegará rapidamente no seu endereço cadastrado.
+                                </div>
+                            </div>
+
+                            <!-- ESTOQUE DISPONÍVEL -->
+                            <div style="margin-bottom: 22px; font-size: 0.9rem;">
+                                <strong style="color: #fff; display: block; margin-bottom: 4px;">Estoque disponível</strong>
+                                <span style="color: ${semEstoque ? '#ff5252' : '#00e676'}; font-size: 0.85rem; font-weight: 600;">
+                                    ${semEstoque ? 'Sem estoque no momento' : `Quantidade: ${p.estoque} unidades`}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- BOTÕES DE AÇÃO -->
+                        <div>
+                            <button class="btn-comprar-agora-modal" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="width: 100%; padding: 13px; font-size: 1rem; cursor: ${semEstoque ? 'not-allowed' : 'pointer'}; background: ${semEstoque ? '#3f4265' : '#3483fa'}; color: #fff; border: none; border-radius: 6px; font-weight: 700; margin-bottom: 10px; transition: 0.2s;">
+                                ${semEstoque ? 'Indisponível' : 'Comprar agora'}
+                            </button>
+
+                            <button class="btn-comprar-modal" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="width: 100%; padding: 12px; font-size: 0.95rem; cursor: ${semEstoque ? 'not-allowed' : 'pointer'}; background: rgba(52, 131, 250, 0.15); color: #3483fa; border: 1px solid rgba(52, 131, 250, 0.4); border-radius: 6px; font-weight: 600; transition: 0.2s;">
+                                ${semEstoque ? 'Esgotado' : 'Adicionar ao carrinho'}
+                            </button>
+
+                            <!-- GARANTIAS DE COMPRA E SELOS DE CONFIANÇA -->
+                            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem; color: #a0a3c4; border-top: 1px solid #2a2d4a; padding-top: 16px;">
+                                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                                    <span style="font-size: 1rem;">↩️</span>
+                                    <span><strong style="color: #3483fa;">Devolução grátis.</strong> Você tem 30 dias a partir da data de recebimento.</span>
+                                </div>
+                                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                                    <span style="font-size: 1rem;">🛡️</span>
+                                    <span><strong style="color: #3483fa;">Compra Garantida.</strong> Receba o produto que está esperando ou devolvemos o dinheiro.</span>
+                                </div>
+                                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                                    <span style="font-size: 1rem;">🏆</span>
+                                    <span><strong style="color: #00e676;">Collector's Leader.</strong> Um dos melhores vendedores do site!</span>
                                 </div>
                             </div>
                         </div>
 
-                        <button class="btn-comprar-modal" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="width: 100%; padding: 12px; font-size: 1rem; cursor: pointer; background: #6c5ce7; color: #fff; border: none; border-radius: 6px; font-weight: bold;">
-                            ${semEstoque ? 'Esgotado' : '🛒 Adicionar ao Carrinho'}
-                        </button>
                     </div>
                 </div>
 
@@ -409,7 +482,6 @@ function renderModalDetalhesHTML() {
         </div>
     `;
 }
-
 // ==========================================
 // 7. CONFIGURAÇÕES E TEMA (LOCALSTORAGE)
 // ==========================================
@@ -435,13 +507,8 @@ function aplicarTema(tema) {
 }
 
 // ==========================================
-// ROTEADOR E NAVEGAÇÃO
+// ROTEADOR E EVENTOS DO MODAL (ATUALIZADO)
 // ==========================================
-function navegaPara(tela) {
-    estado.telaAtual = tela;
-    render();
-}
-
 function render() {
     const container = document.getElementById('app');
     if (!container) {
@@ -452,20 +519,86 @@ function render() {
     if (estado.telaAtual === 'home') {
         renderHome(container);
     } else if (estado.telaAtual === 'carrinho') {
-        renderCarrinho(container);
+        if (typeof renderCarrinho === 'function') renderCarrinho(container);
     } else if (estado.telaAtual === 'cadastro') {
-        renderCadastro(container);
+        if (typeof renderCadastro === 'function') renderCadastro(container);
     } else if (estado.telaAtual === 'configuracoes') {
-        renderConfiguracoes(container);
+        if (typeof renderConfiguracoes === 'function') renderConfiguracoes(container);
     } else if (estado.telaAtual === 'sobre') {
         renderSobre(container);
     }
 
-    if (estado.produtoModalId !== null && typeof renderModalDetalhes === 'function') {
-        renderModalDetalhes(container);
+    // Modal de detalhes
+    if (estado.produtoModalId !== null) {
+        const modalHTML = renderModalDetalhesHTML();
+        if (modalHTML) {
+            container.insertAdjacentHTML('beforeend', modalHTML);
+
+            const overlay = document.getElementById('modalDetalhesOverlay');
+            const btnFechar = document.getElementById('btnFecharModal');
+            const btnComprarModal = container.querySelector('.btn-comprar-modal');
+            const btnComprarAgora = container.querySelector('.btn-comprar-agora-modal');
+
+            const fecharModal = () => {
+                estado.produtoModalId = null;
+                render();
+            };
+
+            if (btnFechar) btnFechar.addEventListener('click', fecharModal);
+            if (overlay) {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) fecharModal();
+                });
+            }
+
+            // Função genérica de adição ao carrinho
+            const adicionarItemAoCarrinho = (id) => {
+                const p = produtos.find(item => item.id === id);
+                if (!p || p.estoque <= 0) return false;
+
+                let carrinho = getCarrinho();
+                const itemExistente = carrinho.find(item => item.id === id);
+
+                if (itemExistente) {
+                    if (itemExistente.qtd < p.estoque) {
+                        itemExistente.qtd += 1;
+                    } else {
+                        alert('Quantidade máxima em estoque atingida!');
+                        return false;
+                    }
+                } else {
+                    carrinho.push({ id: p.id, nome: p.nome, preco: p.preco, imagem: p.imagem, qtd: 1 });
+                }
+
+                salvarCarrinho(carrinho);
+                return true;
+            };
+
+            // Botão "Adicionar ao carrinho"
+            if (btnComprarModal) {
+                btnComprarModal.addEventListener('click', (e) => {
+                    const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                    if (adicionarItemAoCarrinho(id)) {
+                        alert('Produto adicionado ao carrinho!');
+                        fecharModal();
+                    }
+                });
+            }
+
+            // Botão "Comprar agora" (Adiciona e navega direto para o carrinho)
+            if (btnComprarAgora) {
+                btnComprarAgora.addEventListener('click', (e) => {
+                    const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                    if (adicionarItemAoCarrinho(id)) {
+                        estado.produtoModalId = null;
+                        navegaPara('carrinho');
+                    }
+                });
+            }
+        }
     }
 
-    atualizarLogoHeader(); // Atualiza a logo conforme a categoria selecionada
+    atualizarLogoHeader();
 }
 
 // ==========================================
