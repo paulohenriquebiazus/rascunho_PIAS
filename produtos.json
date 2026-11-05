@@ -914,7 +914,7 @@
   {
     "id": 101,
     "nome": "Metroid Prime 4: Beyond",
-    "preco": 120.00,
+    "preco": 150.00,
     "imagem": "imagem/mp4.jfif",
     "categoria": "games",
     "estoque": 5,
@@ -934,6 +934,87 @@
     "nome": "Tekken 8",
     "preco": 120.00,
     "imagem": "imagem/tk8.jpg",
+    "categoria": "games",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 104,
+    "nome": "Bat-Bucho",
+    "preco": 80.00,
+    "imagem": "imagem/batsheetus.jpg",
+    "categoria": "colecionaveis",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 105,
+    "nome": "Dinossauro 3D",
+    "preco": 20.00,
+    "imagem": "imagem/rex(i).avif",
+    "categoria": "colecionaveis",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 106,
+    "nome": "Hornet & Knight",
+    "preco": 30.00,
+    "imagem": "imagem/hk(i).webp",
+    "categoria": "colecionaveis",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 107,
+    "nome": "Box de Cards Pokemon (Zacian Ex)",
+    "preco": 80.00,
+    "imagem": "imagem/bzp.webp",
+    "categoria": "colecionaveis",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 108,
+    "nome": "Doom",
+    "preco": 130.00,
+    "imagem": "imagem/doom(x).jpg",
+    "categoria": "games",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 109,
+    "nome": "Horizon Zero Dawn",
+    "preco": 200.00,
+    "imagem": "imagem/hzd(4).jpg",
+    "categoria": "games",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 110,
+    "nome": "Shadow of the Colossus (Ps2)",
+    "preco": 60.00,
+    "imagem": "imagem/sotc.jpg",
+    "categoria": "games",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 111,
+    "nome": "Another Crab's Treasure",
+    "preco": 60.00,
+    "imagem": "imagem/slc.webp",
+    "categoria": "games",
+    "estoque": 5,
+    "destaque": false
+  },
+  {
+    "id": 112,
+    "nome": "Devil May Cry (Ps2)",
+    "preco": 100.00,
+    "imagem": "imagem/dmc.jpg",
     "categoria": "games",
     "estoque": 5,
     "destaque": false

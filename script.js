@@ -82,7 +82,7 @@ function atualizarLogoHeader() {
     if (logoImg) {
         const catAtiva = estado.telaAtual === 'home' ? estado.categoriaFiltro : 'todos';
         const caminhoLogo = logosCategorias[catAtiva] || logosCategorias['todos'];
-        
+       
         logoImg.src = caminhoLogo;
         logoImg.alt = `Logo ${catAtiva}`;
     }
@@ -94,7 +94,7 @@ function atualizarLogoHeader() {
 async function carregarProdutos() {
     try {
         const resposta = await fetch('produtos.json');
-        
+       
         if (!resposta.ok) {
             throw new Error(`Erro na requisição: ${resposta.status}`);
         }
@@ -140,7 +140,7 @@ function atualizarUIHeader() {
     const usuario = getUsuarioLogado();
 
     // Formato dos ícones: 'circulo', 'quadrado' ou 'outline'
-    const FORMA_ICONE = 'circulo'; 
+    const FORMA_ICONE = 'circulo';
 
     if (btnCadastro) {
         if (usuario) {
@@ -196,7 +196,7 @@ function renderLinhaTempoRastreamentoHTML(pedido) {
                 <span>Rastreio: <strong style="color: #6c5ce7;">${pedido.codigoRastreio || 'N/A'}</strong></span>
                 <span>Status: <strong style="color: #00e676;">${etapas.find(e => e.id === etapaAtual)?.label}</strong></span>
             </div>
-            
+           
             <div style="display: flex; justify-content: space-between; align-items: center; position: relative; gap: 4px;">
                 ${etapas.map(etapa => {
                     const concluida = etapa.id <= etapaAtual;
@@ -271,7 +271,7 @@ function salvarAvaliacoes(avaliacoes) {
 function adicionarAvaliacao(produtoId, nota, comentario) {
     const usuario = getUsuarioLogado();
     const nomeAutor = usuario ? usuario.nome : "Anônimo";
-    
+   
     const avaliacoes = getAvaliacoes();
     if (!avaliacoes[produtoId]) {
         avaliacoes[produtoId] = [];
@@ -312,7 +312,7 @@ function renderSecaoAvaliacoesHTML(produtoId) {
     return `
         <div class="box-avaliacoes">
             <h4 style="margin-bottom: 8px; color: #fff;">Avaliações do Produto</h4>
-            
+           
             <form class="form-avaliacao" data-id="${produtoId}">
                 <div class="campo-estrelas" style="margin-bottom: 8px;">
                     <label style="font-size: 0.85rem; color: #a0a3c4;">Sua nota: </label>
@@ -346,7 +346,7 @@ function renderSecaoAvaliacoesHTML(produtoId) {
 }
 
 // ==========================================
-// 6. MODAL DE DETALHES DO PRODUTO (ESTILO MERCADO LIVRE)
+// 6. MODAL DE DETALHES DO PRODUTO
 // ==========================================
 function renderModalDetalhesHTML() {
     if (!estado.produtoModalId) return '';
@@ -360,121 +360,48 @@ function renderModalDetalhesHTML() {
 
     const descricao = p.descricao || `Produto oficial e de alta qualidade: <strong>${p.nome}</strong>. Ideal para fãs, colecionadores e amantes do universo geek e pop culture. Adicione à sua coleção hoje mesmo!`;
 
-    const valorParcela12x = (p.preco / 12).toFixed(2).replace('.', ',');
-
     return `
-        <div id="modalDetalhesOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box;">
-            <div style="background: #1e2038; border-radius: 8px; max-width: 920px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 25px; position: relative; color: #fff; border: 1px solid #3f4265; box-shadow: 0 12px 35px rgba(0,0,0,0.7);">
-                
-                <!-- BOTÃO FECHAR -->
-                <button id="btnFecharModal" style="position: absolute; top: 15px; right: 15px; background: #141526; border: 1px solid #3f4265; color: #a0a3c4; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.2s;">✖</button>
+        <div id="modalDetalhesOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+            <div style="background: #1e2038; border-radius: 12px; max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 25px; position: relative; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+               
+                <button id="btnFecharModal" style="position: absolute; top: 15px; right: 15px; background: transparent; border: none; color: #a0a3c4; font-size: 1.5rem; cursor: pointer;">✖</button>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 25px; margin-top: 10px;">
-                    
-                    <!-- COLUNA ESQUERDA: IMAGEM E DESCRIÇÃO -->
-                    <div style="display: flex; flex-direction: column; gap: 20px;">
-                        <div style="background: #141526; border: 1px solid #2a2d4a; border-radius: 8px; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 330px;">
-                            <img src="${p.imagem}" alt="${p.nome}" style="max-width: 100%; max-height: 340px; object-fit: contain;">
-                        </div>
-
-                        <div style="background: #141526; border: 1px solid #2a2d4a; border-radius: 8px; padding: 20px;">
-                            <h3 style="margin: 0 0 12px 0; font-size: 1.05rem; color: #fff; border-bottom: 1px solid #2a2d4a; padding-bottom: 8px;">Descrição do Produto</h3>
-                            <p style="font-size: 0.9rem; color: #a0a3c4; line-height: 1.6; margin: 0;">
-                                ${descricao}
-                            </p>
-                        </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 10px;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <img src="${p.imagem}" alt="${p.nome}" style="width: 100%; max-height: 300px; border-radius: 8px; object-fit: contain; background: #141526; padding: 10px; box-sizing: border-box;">
                     </div>
 
-                    <!-- COLUNA DIREITA: PAINEL DE COMPRA (ESTILO MERCADO LIVRE) -->
-                    <div style="background: #141526; border: 1px solid #2a2d4a; border-radius: 8px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
-                            <!-- CONDICAO E CATEGORIA -->
-                            <div style="font-size: 0.8rem; color: #a0a3c4; margin-bottom: 6px;">
-                                Novo &nbsp;|&nbsp; +100 vendidos &nbsp;•&nbsp; <span style="color: #6c5ce7; font-weight: bold;">${nomeCategoria}</span>
-                            </div>
-
-                            <!-- TÍTULO DO PRODUTO -->
-                            <h1 style="font-size: 1.35rem; color: #fff; margin: 0 0 10px 0; line-height: 1.3; font-weight: 700;">
-                                ${p.nome}
-                            </h1>
-
-                            <!-- AVALIAÇÕES -->
-                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 18px; font-size: 0.85rem;">
+                            <span style="font-size: 0.75rem; background: #6c5ce7; color: #fff; padding: 4px 10px; border-radius: 12px; font-weight: bold; text-transform: uppercase;">${nomeCategoria}</span>
+                            <h2 style="margin: 12px 0 6px 0; font-size: 1.4rem; color: #fff;">${p.nome}</h2>
+                           
+                            <div style="margin-bottom: 12px;">
                                 ${renderEstrelasHTML(media)}
-                                <span style="color: #3483fa; font-weight: 600;">${media}</span>
-                                <span style="color: #a0a3c4;">(${total} opiniões)</span>
+                                <small style="color: #a0a3c4;">(${total > 0 ? `${media} de 5 (${total} avaliações)` : 'Sem avaliações ainda'})</small>
                             </div>
 
-                            <!-- PREÇOS E PARCELAMENTO -->
-                            <div style="margin-bottom: 20px;">
-                                ${p.precoOriginal && p.precoOriginal > p.preco ? `
-                                    <span style="text-decoration: line-through; color: #8c8fae; font-size: 0.95rem; display: block; margin-bottom: 2px;">
-                                        R$ ${p.precoOriginal.toFixed(2).replace('.', ',')}
-                                    </span>
-                                ` : ''}
-                                
-                                <div style="display: flex; align-items: baseline; gap: 10px;">
-                                    <span style="font-size: 2.2rem; font-weight: 300; color: #fff; line-height: 1;">
-                                        R$ ${p.preco.toFixed(2).replace('.', ',')}
-                                    </span>
-                                    ${p.precoOriginal && p.precoOriginal > p.preco ? `
-                                        <span style="color: #00a650; font-size: 1.1rem; font-weight: 600;">
-                                            ${Math.round(((p.precoOriginal - p.preco) / p.precoOriginal) * 100)}% OFF
-                                        </span>
-                                    ` : ''}
-                                </div>
+                            ${renderPrecoHTML(p)}
 
-                                <div style="font-size: 0.95rem; color: #00a650; margin-top: 6px; font-weight: 500;">
-                                    em 12x R$ ${valorParcela12x} sem juros
-                                </div>
-                            </div>
+                            <p style="font-size: 0.9rem; color: #c0c3e0; margin: 15px 0; line-height: 1.5;">
+                                ${descricao}
+                            </p>
 
-                            <!-- BANNER DE FRETE GRÁTIS -->
-                            <div style="margin-bottom: 20px; font-size: 0.9rem; background: rgba(0, 166, 80, 0.1); padding: 12px; border-radius: 6px; border: 1px solid rgba(0, 166, 80, 0.25);">
-                                <div style="color: #00a650; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                                    <span>🚚</span> Frete grátis para todo o Brasil
+                            <div style="background: #141526; padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                    <span style="color: #a0a3c4;">Código (ID):</span>
+                                    <strong style="color: #fff;">#${p.id}</strong>
                                 </div>
-                                <div style="color: #a0a3c4; font-size: 0.8rem; margin-top: 3px; padding-left: 26px;">
-                                    Chegará rapidamente no seu endereço cadastrado.
-                                </div>
-                            </div>
-
-                            <!-- ESTOQUE DISPONÍVEL -->
-                            <div style="margin-bottom: 22px; font-size: 0.9rem;">
-                                <strong style="color: #fff; display: block; margin-bottom: 4px;">Estoque disponível</strong>
-                                <span style="color: ${semEstoque ? '#ff5252' : '#00e676'}; font-size: 0.85rem; font-weight: 600;">
-                                    ${semEstoque ? 'Sem estoque no momento' : `Quantidade: ${p.estoque} unidades`}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- BOTÕES DE AÇÃO -->
-                        <div>
-                            <button class="btn-comprar-agora-modal" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="width: 100%; padding: 13px; font-size: 1rem; cursor: ${semEstoque ? 'not-allowed' : 'pointer'}; background: ${semEstoque ? '#3f4265' : '#3483fa'}; color: #fff; border: none; border-radius: 6px; font-weight: 700; margin-bottom: 10px; transition: 0.2s;">
-                                ${semEstoque ? 'Indisponível' : 'Comprar agora'}
-                            </button>
-
-                            <button class="btn-comprar-modal" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="width: 100%; padding: 12px; font-size: 0.95rem; cursor: ${semEstoque ? 'not-allowed' : 'pointer'}; background: rgba(52, 131, 250, 0.15); color: #3483fa; border: 1px solid rgba(52, 131, 250, 0.4); border-radius: 6px; font-weight: 600; transition: 0.2s;">
-                                ${semEstoque ? 'Esgotado' : 'Adicionar ao carrinho'}
-                            </button>
-
-                            <!-- GARANTIAS DE COMPRA E SELOS DE CONFIANÇA -->
-                            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem; color: #a0a3c4; border-top: 1px solid #2a2d4a; padding-top: 16px;">
-                                <div style="display: flex; gap: 10px; align-items: flex-start;">
-                                    <span style="font-size: 1rem;">↩️</span>
-                                    <span><strong style="color: #3483fa;">Devolução grátis.</strong> Você tem 30 dias a partir da data de recebimento.</span>
-                                </div>
-                                <div style="display: flex; gap: 10px; align-items: flex-start;">
-                                    <span style="font-size: 1rem;">🛡️</span>
-                                    <span><strong style="color: #3483fa;">Compra Garantida.</strong> Receba o produto que está esperando ou devolvemos o dinheiro.</span>
-                                </div>
-                                <div style="display: flex; gap: 10px; align-items: flex-start;">
-                                    <span style="font-size: 1rem;">🏆</span>
-                                    <span><strong style="color: #00e676;">Collector's Leader.</strong> Um dos melhores vendedores do site!</span>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: #a0a3c4;">Disponibilidade:</span>
+                                    <strong style="color: ${semEstoque ? '#ff5252' : '#00e676'};">${semEstoque ? 'Esgotado' : `${p.estoque} unidades`}</strong>
                                 </div>
                             </div>
                         </div>
 
+                        <button class="btn-comprar-modal" data-id="${p.id}" ${semEstoque ? 'disabled' : ''} style="width: 100%; padding: 12px; font-size: 1rem; cursor: pointer; background: #6c5ce7; color: #fff; border: none; border-radius: 6px; font-weight: bold;">
+                            ${semEstoque ? 'Esgotado' : '🛒 Adicionar ao Carrinho'}
+                        </button>
                     </div>
                 </div>
 
@@ -482,6 +409,7 @@ function renderModalDetalhesHTML() {
         </div>
     `;
 }
+
 // ==========================================
 // 7. CONFIGURAÇÕES E TEMA (LOCALSTORAGE)
 // ==========================================
@@ -507,8 +435,13 @@ function aplicarTema(tema) {
 }
 
 // ==========================================
-// ROTEADOR E EVENTOS DO MODAL (ATUALIZADO)
+// ROTEADOR E NAVEGAÇÃO
 // ==========================================
+function navegaPara(tela) {
+    estado.telaAtual = tela;
+    render();
+}
+
 function render() {
     const container = document.getElementById('app');
     if (!container) {
@@ -519,86 +452,20 @@ function render() {
     if (estado.telaAtual === 'home') {
         renderHome(container);
     } else if (estado.telaAtual === 'carrinho') {
-        if (typeof renderCarrinho === 'function') renderCarrinho(container);
+        renderCarrinho(container);
     } else if (estado.telaAtual === 'cadastro') {
-        if (typeof renderCadastro === 'function') renderCadastro(container);
+        renderCadastro(container);
     } else if (estado.telaAtual === 'configuracoes') {
-        if (typeof renderConfiguracoes === 'function') renderConfiguracoes(container);
+        renderConfiguracoes(container);
     } else if (estado.telaAtual === 'sobre') {
         renderSobre(container);
     }
 
-    // Modal de detalhes
-    if (estado.produtoModalId !== null) {
-        const modalHTML = renderModalDetalhesHTML();
-        if (modalHTML) {
-            container.insertAdjacentHTML('beforeend', modalHTML);
-
-            const overlay = document.getElementById('modalDetalhesOverlay');
-            const btnFechar = document.getElementById('btnFecharModal');
-            const btnComprarModal = container.querySelector('.btn-comprar-modal');
-            const btnComprarAgora = container.querySelector('.btn-comprar-agora-modal');
-
-            const fecharModal = () => {
-                estado.produtoModalId = null;
-                render();
-            };
-
-            if (btnFechar) btnFechar.addEventListener('click', fecharModal);
-            if (overlay) {
-                overlay.addEventListener('click', (e) => {
-                    if (e.target === overlay) fecharModal();
-                });
-            }
-
-            // Função genérica de adição ao carrinho
-            const adicionarItemAoCarrinho = (id) => {
-                const p = produtos.find(item => item.id === id);
-                if (!p || p.estoque <= 0) return false;
-
-                let carrinho = getCarrinho();
-                const itemExistente = carrinho.find(item => item.id === id);
-
-                if (itemExistente) {
-                    if (itemExistente.qtd < p.estoque) {
-                        itemExistente.qtd += 1;
-                    } else {
-                        alert('Quantidade máxima em estoque atingida!');
-                        return false;
-                    }
-                } else {
-                    carrinho.push({ id: p.id, nome: p.nome, preco: p.preco, imagem: p.imagem, qtd: 1 });
-                }
-
-                salvarCarrinho(carrinho);
-                return true;
-            };
-
-            // Botão "Adicionar ao carrinho"
-            if (btnComprarModal) {
-                btnComprarModal.addEventListener('click', (e) => {
-                    const id = parseInt(e.currentTarget.getAttribute('data-id'));
-                    if (adicionarItemAoCarrinho(id)) {
-                        alert('Produto adicionado ao carrinho!');
-                        fecharModal();
-                    }
-                });
-            }
-
-            // Botão "Comprar agora" (Adiciona e navega direto para o carrinho)
-            if (btnComprarAgora) {
-                btnComprarAgora.addEventListener('click', (e) => {
-                    const id = parseInt(e.currentTarget.getAttribute('data-id'));
-                    if (adicionarItemAoCarrinho(id)) {
-                        estado.produtoModalId = null;
-                        navegaPara('carrinho');
-                    }
-                });
-            }
-        }
+    if (estado.produtoModalId !== null && typeof renderModalDetalhes === 'function') {
+        renderModalDetalhes(container);
     }
 
-    atualizarLogoHeader();
+    atualizarLogoHeader(); // Atualiza a logo conforme a categoria selecionada
 }
 
 // ==========================================
@@ -608,7 +475,7 @@ function renderSobre(container) {
     container.innerHTML = `
         <div class="sobre-wrapper" style="max-width: 900px; margin: 30px auto; padding: 0 15px;">
             <div class="sobre-box" style="background: #1e2038; padding: 40px; border-radius: 12px; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
-                
+               
                 <div style="text-align: center; margin-bottom: 35px; border-bottom: 1px solid #3f4265; padding-bottom: 30px;">
                     <h1 style="font-size: 2.4rem; margin: 0 0 10px 0; color: #fff; font-weight: 800;">
                         Collector's Hub <span style="color: #6c5ce7;">⚡</span>
@@ -692,14 +559,14 @@ function renderPrecoHTML(p) {
 // TELA PRINCIPAL / HOME
 function renderHome(container) {
     const favoritos = getFavoritos();
-    
+   
     let listaFiltrada = produtos;
     if (estado.categoriaFiltro === 'favoritos') {
         listaFiltrada = produtos.filter(p => favoritos.includes(p.id));
     } else if (estado.categoriaFiltro === 'promocoes') {
-        listaFiltrada = produtos.filter(p => 
-            p.categoria === 'promocoes' || 
-            p.destaque === true || 
+        listaFiltrada = produtos.filter(p =>
+            p.categoria === 'promocoes' ||
+            p.destaque === true ||
             (p.precoOriginal && p.precoOriginal > p.preco)
         );
     } else if (estado.categoriaFiltro !== 'todos') {
@@ -711,17 +578,17 @@ function renderHome(container) {
         listaFiltrada = listaFiltrada.filter(p => p.nome.toLowerCase().includes(termo));
     }
 
-    const tituloSecao = estado.categoriaFiltro === 'favoritos' 
-        ? '❤️ Meus Favoritos' 
+    const tituloSecao = estado.categoriaFiltro === 'favoritos'
+        ? '❤️ Meus Favoritos'
         : (estado.categoriaFiltro === 'promocoes' ? '🔥 Promoções & Descontos' : '🛒 Todos os Produtos');
 
     const htmlBarraBusca = `
         <div class="busca-wrapper" style="max-width: 600px; margin: 0 auto 25px auto; padding: 0 15px;">
             <div style="position: relative; display: flex; align-items: center;">
-                <input 
-                    type="text" 
-                    id="inputBuscaProdutos" 
-                    placeholder="🔍 Digite o nome do produto..." 
+                <input
+                    type="text"
+                    id="inputBuscaProdutos"
+                    placeholder="🔍 Digite o nome do produto..."
                     value="${estado.termoBusca}"
                     style="width: 100%; padding: 12px 16px; padding-right: 40px; border-radius: 8px; border: 1px solid #3f4265; background: #1e2038; color: #fff; font-size: 0.95rem; box-sizing: border-box; outline: none;"
                 >
@@ -749,7 +616,7 @@ function renderHome(container) {
                         </button>
                         <img src="${p.imagem}" class="imagem_produto btn-detalhes" data-id="${p.id}" alt="${p.nome}" style="cursor: pointer;">
                         <h3 class="btn-detalhes" data-id="${p.id}" style="cursor: pointer;">${p.nome}</h3>
-                        
+                       
                         <div class="card-avaliacao-resumo" style="margin: 4px 0;">
                             ${renderEstrelasHTML(media)}
                             <small style="color: #a0a3c4;">(${total > 0 ? `${media} • ${total}` : 'Sem avaliações'})</small>
@@ -766,9 +633,9 @@ function renderHome(container) {
                                 ${semEstoque ? 'Esgotado' : 'Comprar'}
                             </button>
                         </div>
-                        
+                       
                         <button class="btn-ver-avaliacoes" data-id="${p.id}" style="background: transparent; border: 1px solid #3f4265; color: #a0a3c4; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; width: 100%; font-size: 0.85rem;">💬 Avaliações</button>
-                        
+                       
                         <div class="painel-avaliacoes" id="painel-aval-${p.id}" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a2d4a;">
                             ${renderSecaoAvaliacoesHTML(p.id)}
                         </div>
@@ -819,7 +686,7 @@ function renderHome(container) {
         btn.addEventListener('click', (e) => {
             const id = parseInt(e.target.getAttribute('data-id'));
             const prod = produtos.find(p => p.id === id);
-            
+           
             if (!prod || prod.estoque <= 0) return;
 
             let carrinho = getCarrinho();
@@ -834,7 +701,7 @@ function renderHome(container) {
             prod.estoque -= 1;
             salvarCarrinho(carrinho);
             alert(`${prod.nome} foi adicionado ao carrinho!`);
-            
+           
             estado.produtoModalId = null;
             render();
         });
@@ -1089,7 +956,7 @@ function renderCadastro(container) {
         container.innerHTML = `
             <div class="cadastro-wrapper" style="max-width: 850px; margin: 30px auto; padding: 0 15px;">
                 <div class="cadastro-box" style="text-align: left; background: #1e2038; padding: 30px; border-radius: 12px;">
-                    
+                   
                     <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #3f4265; padding-bottom: 20px; margin-bottom: 25px;">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <div style="width: 60px; height: 60px; background: #6c5ce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold; color: #fff;">
@@ -1106,7 +973,7 @@ function renderCadastro(container) {
                     </div>
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 25px;">
-                        
+                       
                         <div style="background: #141526; padding: 20px; border-radius: 8px; border: 1px solid #2a2d4a;">
                             <h3 style="color: #6c5ce7; margin-top: 0; margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
                                 👤 Dados Pessoais
@@ -1250,7 +1117,7 @@ function renderCadastro(container) {
 
                 <form id="cadastroForm">
                     <h3 style="color: #6c5ce7; font-size: 1rem; border-bottom: 1px solid #3f4265; padding-bottom: 6px; margin-bottom: 15px;">1. Dados Acesso & Pessoais</h3>
-                    
+                   
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px;">
                         <div class="campo">
                             <label for="nome">Nome Completo *</label>
@@ -1401,10 +1268,10 @@ function renderConfiguracoes(container) {
                 <h1 style="margin-bottom: 20px; display: flex; align-items: center;">
                     ${getIconeConfigHTML('circulo')} Configurações & Perfil
                 </h1>
-                
+               
                 <div class="config-secao" style="margin-bottom: 30px;">
                     <h2 style="color: #6c5ce7; font-size: 1.1rem; border-bottom: 1px solid #3f4265; padding-bottom: 8px;">Preferências do Site</h2>
-                    
+                   
                     <div class="campo-config" style="margin-top: 15px;">
                         <label>Tema de Visualização</label>
                         <select id="selectTema" style="background: #141526; color: #fff; border: 1px solid #3f4265; padding: 8px; border-radius: 6px; width: 100%;">
@@ -1426,7 +1293,7 @@ function renderConfiguracoes(container) {
                     <h2 style="color: #6c5ce7; font-size: 1.1rem; border-bottom: 1px solid #3f4265; padding-bottom: 8px;">Atualizar Dados Cadastrais</h2>
                     ${usuario ? `
                         <form id="formAtualizarConta" style="margin-top: 15px;">
-                            
+                           
                             <h4 style="color: #a0a3c4; margin-bottom: 10px;">Informações Pessoais</h4>
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 15px;">
                                 <div class="campo">
@@ -1552,7 +1419,7 @@ function renderSobre(container) {
     container.innerHTML = `
         <div class="sobre-wrapper" style="max-width: 900px; margin: 30px auto; padding: 0 15px;">
             <div class="sobre-box" style="background: #1e2038; padding: 40px; border-radius: 12px; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
-                
+               
                 <!-- HERO / CABEÇALHO -->
                 <div style="text-align: center; margin-bottom: 35px; border-bottom: 1px solid #3f4265; padding-bottom: 30px;">
                     <h1 style="font-size: 2.4rem; margin: 0 0 10px 0; color: #fff; font-weight: 800;">
@@ -1647,12 +1514,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnConfig = document.getElementById('btnIrConfig');
 
     if (btnLogo) {
-        btnLogo.addEventListener('click', (e) => { 
-            e.preventDefault(); 
+        btnLogo.addEventListener('click', (e) => {
+            e.preventDefault();
             estado.categoriaFiltro = 'todos';
-            estado.termoBusca = ''; 
+            estado.termoBusca = '';
             estado.produtoModalId = null;
-            navegaPara('home'); 
+            navegaPara('home');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
@@ -1689,11 +1556,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (linkCategoria) {
             e.preventDefault();
             const categoria = linkCategoria.getAttribute('data-categoria');
-            
+           
             estado.categoriaFiltro = categoria;
             estado.termoBusca = '';
             estado.produtoModalId = null;
-            
+           
             fecharMenu();
             navegaPara('home');
             window.scrollTo({ top: 0, behavior: 'smooth' });
